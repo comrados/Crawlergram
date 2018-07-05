@@ -1,0 +1,23 @@
+/* that's for migration from one Dc to another
+// get auth key (after auth and set current DC as authenticated)
+TLRequestAuthExportAuthorization expAuthReq = new TLRequestAuthExportAuthorization();
+expAuthReq.setDcId(apiState.getPrimaryDc());
+TLExportedAuthorization expAuth = api.doRpcCall(expAuthReq);
+apiState.putAuthKey(apiState.getPrimaryDc(), expAuth.getBytes().getData());
+*/
+
+// send message to self
+/*
+TLRequestMessagesSendMessage rsm = new TLRequestMessagesSendMessage();
+rsm.setMessage("Hey!");
+rsm.setPeer(new TLInputPeerSelf());
+Random rnd = new Random();
+rsm.setRandomId(rnd.nextLong());
+try {
+	TLUpdates sm = (TLUpdates) api.doRpcCall(rsm);
+} catch (IOException e) {
+	e.printStackTrace();
+} catch (TimeoutException e) {
+	e.printStackTrace();
+}
+*/
