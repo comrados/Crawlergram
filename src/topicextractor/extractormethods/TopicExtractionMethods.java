@@ -11,13 +11,24 @@ import topicextractor.structures.TEDialog;
 import topicextractor.structures.TEMessage;
 import topicextractor.structures.TEMessageToken;
 
+import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TopicExtractionMethods {
 
-    final static String PUNCT = "[\\p{Punct}‹›«»¿¡!?\'\"‘’“”⟨⟩°※©℗®℠™]";//punctuation
+    final private static String PUNCT = "[\\p{Punct}–…‹›§«»¿¡!?≠\'\"‘’“”⟨⟩°※©℗®℠™—]";//punctuation
+    final private static String CHAR_REPEATS_BEG = "^((.)\\2)\\2+"; // same char doesn't repeat more than once at the beginning
+    final private static String CHAR_REPEATS_MID_END = "((.)\\2)\\2+"; // same char doesn't appear more than twice at mid and end
+    final private static String DATASIZES = "^[0-9]+(k|m|g|t|p)?b(it)?(s)?$";
+    final private static String SECONDS = "^[0-9]+(n|m)?s(ec)?(ond)?(s)?$";
+    final private static String HOURS = "^[0-9]+h(our)?(s)?$";
+    final private static String METERS = "^[0-9]+(k|m|c|d|n)?m(eter)?(s)?$";
+    final private static String TIME = "^[0-9]+(a|p)m";
+    final private static String NUMBERS_SUP = "^[0-9]+(k|m|ish|th|nd|st|rd|g|x)+";
+    final private static String HEX = "^([0]x)?[0-9a-f]+$";
 
     /**
      * do topic extraction for each dialog, if dates are wrong (from > to) or both dates equal zero -> read all messages
@@ -63,6 +74,11 @@ public class TopicExtractionMethods {
             getTokenCompounds(msgs);
             Set<String> uniqueWords = getUniqueWords(msgs);
             System.out.println();
+            try {
+                saveSet("words.txt", uniqueWords);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             //TODO
         } else {
             System.out.println("EMPTY MESSAGES: " + dialog.getId() + " " + dialog.getUsername());
@@ -85,7 +101,7 @@ public class TopicExtractionMethods {
      */
     private static void getSimpleTokens(List<TEMessage> msgs) {
         for (TEMessage msg : msgs) {
-            String[] tokensA = msg.getText().split("[\\s]");
+            String[] tokensA = msg.getText().split("[\\s]+");
             List<TEMessageToken> tokens = new LinkedList<>();
             for (String token : tokensA) {
                 if (!tokenCheck(token)) {
@@ -106,8 +122,9 @@ public class TopicExtractionMethods {
                 String[] tokensA = token.getSimple().split(PUNCT);
                 List<String> tokensL = new LinkedList<>();
                 for (String tokenA : tokensA) {
+                    tokenA = compoundTokenEdit(tokenA);
                     if(!tokenCheck(tokenA)){
-                        tokensL.add(tokenA.toLowerCase());
+                        tokensL.add(tokenA);
                     }
                 }
                 token.setCompound(tokensL);
@@ -162,6 +179,20 @@ public class TopicExtractionMethods {
         return !((token.length() <= max) && (token.length() >= min));
     }
 
+    private static String compoundTokenEdit(String token){
+        String temp = token.toLowerCase();
+        temp = temp.replaceAll(CHAR_REPEATS_BEG, "$2");
+        temp = temp.replaceAll(CHAR_REPEATS_MID_END, "$2$2");
+        temp = temp.replaceAll(DATASIZES, "");
+        temp = temp.replaceAll(SECONDS, "");
+        temp = temp.replaceAll(HOURS, "");
+        temp = temp.replaceAll(METERS, "");
+        temp = temp.replaceAll(NUMBERS_SUP, "");
+        temp = temp.replaceAll(TIME, "");
+        temp = temp.replaceAll(HEX, "");
+        return temp;
+    }
+
     /**
      * returns a sorted list (set) of sorted compounds of tokens
      * @param msgs original msgs object (with calculated simple and compound tokens)
@@ -174,6 +205,14 @@ public class TopicExtractionMethods {
             }
         }
         return uniqueWords;
+    }
+
+    private static void saveSet(String filename, Set<String> uniqueWords) throws IOException{
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename, false), Charset.forName("UTF-8")));
+        for (String word: uniqueWords){
+            writer.write(word + "\r\n");
+        }
+        writer.close();
     }
 
 }
