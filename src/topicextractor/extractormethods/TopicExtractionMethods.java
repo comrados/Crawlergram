@@ -22,13 +22,15 @@ public class TopicExtractionMethods {
     final private static String PUNCT = "[\\p{Punct}–…‹›§«»¿¡!?≠\'\"‘’“”⟨⟩°※©℗®℠™—]";//punctuation
     final private static String CHAR_REPEATS_BEG = "^((.)\\2)\\2+"; // same char doesn't repeat more than once at the beginning
     final private static String CHAR_REPEATS_MID_END = "((.)\\2)\\2+"; // same char doesn't appear more than twice at mid and end
-    final private static String DATASIZES = "^[0-9]+(k|m|g|t|p)?b(it)?(s)?$";
-    final private static String SECONDS = "^[0-9]+(n|m)?s(ec)?(ond)?(s)?$";
-    final private static String HOURS = "^[0-9]+h(our)?(s)?$";
-    final private static String METERS = "^[0-9]+(k|m|c|d|n)?m(eter)?(s)?$";
-    final private static String TIME = "^[0-9]+(a|p)m";
-    final private static String NUMBERS_SUP = "^[0-9]+(k|m|ish|th|nd|st|rd|g|x)+";
-    final private static String HEX = "^([0]x)?[0-9a-f]+$";
+    final private static String DATASIZES = "^[0-9]+(k|m|g|t|p)?b(it)?(s)?$"; // data sizes
+    final private static String SECONDS = "^[0-9]+(n|m)?s(ec)?(ond)?(s)?$"; // seconds
+    final private static String HOURS = "^[0-9]+h(our)?(s)?$"; // hours
+    final private static String METERS = "^[0-9]+(k|m|c|d|n)?m(eter)?(s)?$"; // meters
+    final private static String TIME = "^[0-9]+(a|p)m"; // time
+    final private static String NUMBERS_SUP = "^[0-9]+(k|m|ish|th|nd|st|rd|g|x)+"; // numbers
+    final private static String HEX = "^([0]x)?[0-9a-f]+$"; // hexadecimal
+
+    final private static String CHAR_FILTER = "[^\u0000-\u1FFF]"; // filters all the characters that fall out this list
 
     /**
      * do topic extraction for each dialog, if dates are wrong (from > to) or both dates equal zero -> read all messages
@@ -181,15 +183,16 @@ public class TopicExtractionMethods {
 
     private static String compoundTokenEdit(String token){
         String temp = token.toLowerCase();
+        temp = temp.replaceAll(CHAR_FILTER, ""); //removes redundant characters, emoticons and so on
         temp = temp.replaceAll(CHAR_REPEATS_BEG, "$2");
         temp = temp.replaceAll(CHAR_REPEATS_MID_END, "$2$2");
-        temp = temp.replaceAll(DATASIZES, "");
-        temp = temp.replaceAll(SECONDS, "");
-        temp = temp.replaceAll(HOURS, "");
-        temp = temp.replaceAll(METERS, "");
-        temp = temp.replaceAll(NUMBERS_SUP, "");
-        temp = temp.replaceAll(TIME, "");
-        temp = temp.replaceAll(HEX, "");
+        temp = temp.replaceAll(DATASIZES, "bytes");
+        temp = temp.replaceAll(SECONDS, "seconds");
+        temp = temp.replaceAll(HOURS, "hours");
+        temp = temp.replaceAll(METERS, "meters");
+        temp = temp.replaceAll(NUMBERS_SUP, "numbers");
+        temp = temp.replaceAll(TIME, "time");
+        temp = temp.replaceAll(HEX, "hexadecimal");
         return temp;
     }
 

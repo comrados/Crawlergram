@@ -697,8 +697,8 @@ public class DialogsHistoryMethods {
             if (temp == null){break;}
             // process them
             checkAndUpdateParticipants(temp, participantsIdSet, users, participants);
-            retrieved = users.size();
-            offset = users.size();
+            retrieved = participants.size();
+            offset = participants.size();
             try {
                 Thread.sleep(100);
             } catch (InterruptedException ignored) {}
@@ -730,44 +730,52 @@ public class DialogsHistoryMethods {
                                                    TLVector<TLAbsUser> users, TLVector<TLAbsChannelParticipant> participants){
         TLVector<TLAbsUser> tempUsers = temp.getUsers();
         TLVector<TLAbsChannelParticipant> tempParticipants = temp.getParticipants();
-        for (TLAbsUser tempUser : tempUsers) {
-            int curId = tempUser.getId();
-            if (!participantsIdSet.contains(curId)) {
+        for (TLAbsChannelParticipant curParticipant: tempParticipants){
+            int curId = getParticipantId(curParticipant);
+            if (!participantsIdSet.contains(curId)){
                 participantsIdSet.add(curId);
-                users.add(tempUser);
-                participants.add(getParticipantFromListById(tempParticipants, curId));
+                participants.add(curParticipant);
+                users.add(getUserFromListById(tempUsers, curId));
             }
         }
     }
 
     /**
-     * gets participant by id (while original users and participants lists are not ordered)
-     * @param participants list
+     * returns id of abs participant
+     * @param participant participant
+     */
+    private static int getParticipantId(TLAbsChannelParticipant participant){
+        int parId = 0;
+        if (participant instanceof TLChannelParticipant){
+            parId = ((TLChannelParticipant) participant).getUserId();
+        } else if (participant instanceof TLChannelParticipantCreator){
+            parId = ((TLChannelParticipantCreator) participant).getUserId();
+        } else if (participant instanceof TLChannelParticipantEditor){
+            parId = ((TLChannelParticipantEditor) participant).getUserId();
+        } else if (participant instanceof TLChannelParticipantKicked){
+            parId = ((TLChannelParticipantKicked) participant).getUserId();
+        } else if (participant instanceof TLChannelParticipantModerator){
+            parId = ((TLChannelParticipantModerator) participant).getUserId();
+        } else if (participant instanceof TLChannelParticipantSelf){
+            parId = ((TLChannelParticipantSelf) participant).getUserId();
+        }
+        return parId;
+    }
+
+    /**
+     * gets user by id (while original users and participants lists are not ordered)
+     * @param users list
      * @param id required id
      */
-    private static TLAbsChannelParticipant getParticipantFromListById(TLVector<TLAbsChannelParticipant> participants, int id){
-        TLAbsChannelParticipant par = null;
-        for(TLAbsChannelParticipant participant: participants){
-            int parId = 0;
-            if (participant instanceof TLChannelParticipant){
-                parId = ((TLChannelParticipant) participant).getUserId();
-            } else if (participant instanceof TLChannelParticipantCreator){
-                parId = ((TLChannelParticipantCreator) participant).getUserId();
-            } else if (participant instanceof TLChannelParticipantEditor){
-                parId = ((TLChannelParticipantEditor) participant).getUserId();
-            } else if (participant instanceof TLChannelParticipantKicked){
-                parId = ((TLChannelParticipantKicked) participant).getUserId();
-            } else if (participant instanceof TLChannelParticipantModerator){
-                parId = ((TLChannelParticipantModerator) participant).getUserId();
-            } else if (participant instanceof TLChannelParticipantSelf){
-                parId = ((TLChannelParticipantSelf) participant).getUserId();
-            }
-            if (id == parId){
-                par = participant;
+    private static TLAbsUser getUserFromListById(TLVector<TLAbsUser> users, int id){
+        TLAbsUser u = null;
+        for(TLAbsUser user: users){
+            if (user.getId() == id){
+                u = user;
                 break;
             }
         }
-        return par;
+        return u;
     }
 
     /**
