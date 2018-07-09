@@ -77,6 +77,7 @@ public class Matrix {
         }
         return mat;
     }
+
     public Matrix insertColumnWithValue1() {
         Matrix X_ = new Matrix(this.getNrows(), this.getNcols()+1);
         for (int i=0;i<X_.getNrows();i++) {

@@ -40,7 +40,7 @@ public class testmedia {
         DBStorage dbStorage = new MongoDBStorage("telegramJ", "telegram", "cart", "localhost", 27017, "fs");
 
         //register loggers
-        LogMethods.registerLogs("logs");
+        LogMethods.registerLogs("logs", false);
 
         // api state
         AbsApiState apiState = new MemoryApiState("api.state");

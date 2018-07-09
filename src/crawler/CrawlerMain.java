@@ -46,8 +46,8 @@ public class CrawlerMain {
         // User "telegramJ" - db.createUser({user: "telegramJ", pwd: "cart", roles: [{ role: "readWrite", db: "telegram" }]})
         DBStorage dbStorage = new MongoDBStorage("telegramJ", "telegram", "cart", "localhost", 27017, "fs");
 
-        //register loggers
-        LogMethods.registerLogs("logs");
+        //register loggers (registration is desirable, otherwise - output will be in console)
+        LogMethods.registerLogs("logs", false);
 
         // api state
         AbsApiState apiState = new MemoryApiState("api.state");

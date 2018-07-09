@@ -18,7 +18,6 @@ public abstract class GaussNewton {
      * @param y The dependent values observed
      * @param numberOfParameters The number of unknown parameters in y function
      * @return optimised values of parameters in y function
-     * @throws NoSquareException
      */
     public double[] optimise(double[][] x, double[] y, int numberOfParameters) throws NoSquareException {
         double[] b = new double[numberOfParameters];
@@ -49,7 +48,6 @@ public abstract class GaussNewton {
      * @param y The dependent values observed
      * @param b The parameter matrix
      * @return The optimised values of parameters in y function
-     * @throws NoSquareException
      */
     public double[] optimise(double[][] x, double[] y, double[] b) throws NoSquareException {
         int maxIteration = 1000;
@@ -78,10 +76,10 @@ public abstract class GaussNewton {
      * @param res The input matrix that contains the error in predictions
      * @return The root mean square of error values in res matrix
      */
-    public double calculateError(double[][] res) {
+    private double calculateError(double[][] res) {
         double sum = 0;
-        for (int i = 0; i < res.length; i++) {
-            sum += (res[i][0] * res[i][0]);
+        for (double[] re : res) {
+            sum += (re[0] * re[0]);
         }
         return Math.sqrt(sum);
     }
@@ -95,7 +93,7 @@ public abstract class GaussNewton {
      * @return An array with 1 column and number of rows equal to the length of y and its value in row i is the difference between
      * actual y and predicted y at i
      */
-    public double[][] calculateResiduals(double[][] x, double[] y, double[] b) {
+    private double[][] calculateResiduals(double[][] x, double[] y, double[] b) {
         double[][] res = new double[y.length][1];
 
         for (int i = 0; i < res.length; i++) {
@@ -118,9 +116,8 @@ public abstract class GaussNewton {
      * @param JArray The Jacobian matrix as input
      * @param res The residulas matrix
      * @return (JT * J)^-1 * JT
-     * @throws NoSquareException
      */
-    public double[][] transjacob(double[][] JArray, double[][] res) throws NoSquareException {
+    private double[][] transjacob(double[][] JArray, double[][] res) throws NoSquareException {
         Matrix r = new Matrix(res); // r
         Matrix J = new Matrix(JArray); // J
         Matrix JT = MatrixMathematics.transpose(J); // JT
@@ -148,7 +145,7 @@ public abstract class GaussNewton {
      * @param numberOfObservations the length of x matrix (the number of rows)
      * @return Jacobian matrix
      */
-    public double[][] jacob(double[] b, double[][] x, int numberOfObservations) {
+    private double[][] jacob(double[] b, double[][] x, int numberOfObservations) {
         int numberOfVariables = b.length;
         double[][] jc = new double[numberOfObservations][numberOfVariables];
 
@@ -177,7 +174,7 @@ public abstract class GaussNewton {
      * @return dy/d(b[bIndex])
      *
      */
-    public double derivative(double x, double[] b, int bIndex) {
+    private double derivative(double x, double[] b, int bIndex) {
         double[] bCopy = b.clone();
         bCopy[bIndex] += alpha;
         double y1 = findY(x, bCopy);

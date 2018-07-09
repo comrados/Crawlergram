@@ -31,8 +31,8 @@ public class testmsg {
 
     public static void main(String[] args) {
 
-        org.telegram.mtproto.log.Logger.registerInterface(new MTProtoLoggerInterfaceImplemented("log1.log"));
-        org.telegram.api.engine.Logger.registerInterface(new ApiLoggerInterfaceImplemented("log.log"));
+        org.telegram.mtproto.log.Logger.registerInterface(new MTProtoLoggerInterfaceImplemented("log1.log", false));
+        org.telegram.api.engine.Logger.registerInterface(new ApiLoggerInterfaceImplemented("log.log", false));
 
         // auth
         AbsApiState apiState = new MemoryApiState("api.state");

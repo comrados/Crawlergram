@@ -49,8 +49,8 @@ public class CrawlerMainOld {
         FileMethods.checkFilePath(logfilePathApi);
         FileMethods.checkFilePath(logfilePathMTProto);
         // init logs
-        org.telegram.mtproto.log.Logger.registerInterface(new MTProtoLoggerInterfaceImplemented(logfilePathMTProto));
-        org.telegram.api.engine.Logger.registerInterface(new ApiLoggerInterfaceImplemented(logfilePathApi));
+        org.telegram.mtproto.log.Logger.registerInterface(new MTProtoLoggerInterfaceImplemented(logfilePathMTProto, false));
+        org.telegram.api.engine.Logger.registerInterface(new ApiLoggerInterfaceImplemented(logfilePathApi, false));
 
         // apimethods state
         AbsApiState apiState = new MemoryApiState("api.state");

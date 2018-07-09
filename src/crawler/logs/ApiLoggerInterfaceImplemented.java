@@ -19,14 +19,16 @@ public class ApiLoggerInterfaceImplemented implements LoggerInterface {
     PrintWriter out;
     BufferedWriter bw;
     FileWriter fw;
+    boolean writeLog = false;
 
     //constructor
-    public ApiLoggerInterfaceImplemented(String filename) {
+    public ApiLoggerInterfaceImplemented(String filename, boolean writeLog) {
         this.filename = filename;
         try {
             fw = new FileWriter(filename, true);
             bw = new BufferedWriter(fw);
             out = new PrintWriter(bw);
+            this.writeLog = writeLog;
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
@@ -34,16 +36,16 @@ public class ApiLoggerInterfaceImplemented implements LoggerInterface {
 
     @Override
     public void w(String s, String s1) {
-        out.println(s + ":" + s1);
+        if (writeLog) out.println(s + ":" + s1);
     }
 
     @Override
     public void d(String s, String s1) {
-        out.println(s + ":" + s1);
+        if (writeLog) out.println(s + ":" + s1);
     }
 
     @Override
     public void e(String s, Throwable throwable) {
-        out.println(s + ":" + throwable.getMessage());
+        if (writeLog) out.println(s + ":" + throwable.getMessage());
     }
 }

@@ -9,13 +9,8 @@ package topicextractor.maths.gaussnewton;
 public class MatrixMathematics {
 
     /**
-     * This class a matrix utility class and cannot be instantiated.
-     */
-    private MatrixMathematics(){}
-    /**
      * Transpose of a matrix - Swap the columns with rows
-     * @param matrix
-     * @return
+     * @param matrix matrix
      */
     public static Matrix transpose(Matrix matrix) {
         Matrix transposedMatrix = new Matrix(matrix.getNcols(), matrix.getNrows());
@@ -32,9 +27,7 @@ public class MatrixMathematics {
      * A matrix that have inverse is called non-singular or invertible. If the matrix does not have inverse it is called singular.
      * For a singular matrix the values of the inverted matrix are either NAN or Infinity
      * Only square matrices have inverse and the following method will throw exception if the matrix is not square.
-     * @param matrix
-     * @return
-     * @throws NoSquareException
+     * @param matrix matrix
      */
     public static Matrix inverse(Matrix matrix) throws NoSquareException {
         return (transpose(cofactor(matrix)).multiplyByConstant(1.0/determinant(matrix)));
@@ -43,9 +36,7 @@ public class MatrixMathematics {
     /**
      * Determinant of a square matrix
      * The following function find the determinant in a recursively.
-     * @param matrix
-     * @return
-     * @throws NoSquareException
+     * @param matrix matrix
      */
     public static double determinant(Matrix matrix) throws NoSquareException {
         if (!matrix.isSquare())
@@ -66,31 +57,29 @@ public class MatrixMathematics {
 
     /**
      * Determine the sign; i.e. even numbers have sign + and odds -
-     * @param i
-     * @return
+     * @param i number
      */
-    private static int changeSign(int i) {
+    public static int changeSign(int i) {
         if (i%2==0)
             return 1;
         return -1;
     }
     /**
      * Creates a submatrix excluding the given row and column
-     * @param matrix
-     * @param excluding_row
-     * @param excluding_col
-     * @return
+     * @param matrix matrix
+     * @param excludingRow row to exclude
+     * @param excludingCol column to exclude
      */
-    public static Matrix createSubMatrix(Matrix matrix, int excluding_row, int excluding_col) {
+    public static Matrix createSubMatrix(Matrix matrix, int excludingRow, int excludingCol) {
         Matrix mat = new Matrix(matrix.getNrows()-1, matrix.getNcols()-1);
         int r = -1;
         for (int i=0;i<matrix.getNrows();i++) {
-            if (i==excluding_row)
+            if (i==excludingRow)
                 continue;
             r++;
             int c = -1;
             for (int j=0;j<matrix.getNcols();j++) {
-                if (j==excluding_col)
+                if (j==excludingCol)
                     continue;
                 mat.setValueAt(r, ++c, matrix.getValueAt(i, j));
             }
@@ -100,9 +89,7 @@ public class MatrixMathematics {
 
     /**
      * The cofactor of a matrix
-     * @param matrix
-     * @return
-     * @throws NoSquareException
+     * @param matrix matrix
      */
     public static Matrix cofactor(Matrix matrix) throws NoSquareException {
         Matrix mat = new Matrix(matrix.getNrows(), matrix.getNcols());
@@ -117,10 +104,8 @@ public class MatrixMathematics {
 
     /**
      * Adds two matrices of the same dimension
-     * @param matrix1
-     * @param matrix2
-     * @return
-     * @throws IllegalDimensionException
+     * @param matrix1 matrix 1
+     * @param matrix2 matrix 2
      */
     public static Matrix add(Matrix matrix1, Matrix matrix2) throws IllegalDimensionException {
         if (matrix1.getNcols() != matrix2.getNcols() || matrix1.getNrows() != matrix2.getNrows())
@@ -136,10 +121,8 @@ public class MatrixMathematics {
 
     /**
      * subtract two matrices using the above addition method. Matrices should be the same dimension.
-     * @param matrix1
-     * @param matrix2
-     * @return
-     * @throws IllegalDimensionException
+     * @param matrix1 matrix 1
+     * @param matrix2 matrix 2
      */
     public static Matrix subtract(Matrix matrix1, Matrix matrix2) throws IllegalDimensionException {
         return add(matrix1,matrix2.multiplyByConstant(-1));
@@ -147,10 +130,8 @@ public class MatrixMathematics {
 
     /**
      * Multiply two matrices
-     *
-     * @param matrix1
-     * @param matrix2
-     * @return
+     * @param matrix1 matrix 1
+     * @param matrix2 matrix 2
      */
     public static Matrix multiply(Matrix matrix1, Matrix matrix2)  {
         Matrix multipliedMatrix = new Matrix(matrix1.getNrows(), matrix2.getNcols());
