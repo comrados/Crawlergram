@@ -1,5 +1,5 @@
 /*
- * Title: ReadFromDBMethods.java
+ * Title: TopicExtractionMethods.java
  * Project: telegramJ
  * Creator: Georgii Mikriukov
  */
@@ -7,6 +7,7 @@
 package topicextractor.extractormethods;
 
 import storage.db.DBStorage;
+import topicextractor.maths.gras.Gras;
 import topicextractor.structures.TEDialog;
 import topicextractor.structures.TEMessage;
 import topicextractor.structures.TEMessageToken;
@@ -19,15 +20,15 @@ import java.util.regex.Pattern;
 
 public class TopicExtractionMethods {
 
-    final private static String PUNCT = "[\\p{Punct}–…‹›§«»¿¡!?≠\'\"‘’“”⟨⟩°※©℗®℠™—]";//punctuation
+    final private static String PUNCT = "[\\p{Punct}–…‹›§«»¿¡!?≠\'´\"‘’“”⟨⟩°※©℗®℠™—]";//punctuation
     final private static String CHAR_REPEATS_BEG = "^((.)\\2)\\2+"; // same char doesn't repeat more than once at the beginning
     final private static String CHAR_REPEATS_MID_END = "((.)\\2)\\2+"; // same char doesn't appear more than twice at mid and end
-    final private static String DATASIZES = "^[0-9]+(k|m|g|t|p)?b(it)?(s)?$"; // data sizes
-    final private static String SECONDS = "^[0-9]+(n|m)?s(ec)?(ond)?(s)?$"; // seconds
+    final private static String DATASIZES = "^[0-9]+([kmgtp])?b(it)?(s)?$"; // data sizes
+    final private static String SECONDS = "^[0-9]+(nm)?s(ec)?(ond)?(s)?$"; // seconds
     final private static String HOURS = "^[0-9]+h(our)?(s)?$"; // hours
-    final private static String METERS = "^[0-9]+(k|m|c|d|n)?m(eter)?(s)?$"; // meters
-    final private static String TIME = "^[0-9]+(a|p)m"; // time
-    final private static String NUMBERS_SUP = "^[0-9]+(k|m|ish|th|nd|st|rd|g|x)+"; // numbers
+    final private static String METERS = "^[0-9]+(kmcdn)?m(eter)?(s)?$"; // meters
+    final private static String TIME = "^[0-9]+(ap)m"; // time
+    final private static String NUMBERS_SUP = "^[0-9]+(km|ish|th|nd|st|rd|g|x)+"; // numbers
     final private static String HEX = "^([0]x)?[0-9a-f]+$"; // hexadecimal
 
     final private static String CHAR_FILTER = "[^\u0000-\u1FFF]"; // filters all the characters that fall out this list
@@ -74,7 +75,8 @@ public class TopicExtractionMethods {
             msgs = MessageMergingMethods.mergeMessages(dialog, msgs, docThreshold);
             getSimpleTokens(msgs);
             getTokenCompounds(msgs);
-            Set<String> uniqueWords = getUniqueWords(msgs);
+            Map<String, String> uniqueWords = getUniqueWords(msgs);
+            uniqueWords = Gras.doStemming(uniqueWords, 5, 4, 0.8);
             System.out.println();
             try {
                 saveSet("words.txt", uniqueWords);
@@ -89,8 +91,8 @@ public class TopicExtractionMethods {
 
     /**
      * if dates are wrong (from > to) or both dates equal zero -> false
-     * @param dateFrom
-     * @param dateTo
+     * @param dateFrom date from
+     * @param dateTo date to
      */
     private static boolean datesCheck(int dateFrom, int dateTo) {
         return ((dateFrom != 0) || (dateTo != 0)) && dateFrom < dateTo;
@@ -106,7 +108,7 @@ public class TopicExtractionMethods {
             String[] tokensA = msg.getText().split("[\\s]+");
             List<TEMessageToken> tokens = new LinkedList<>();
             for (String token : tokensA) {
-                if (!tokenCheck(token)) {
+                if (tokenCheck(token)) {
                     tokens.add(new TEMessageToken(token));
                 }
             }
@@ -125,7 +127,7 @@ public class TopicExtractionMethods {
                 List<String> tokensL = new LinkedList<>();
                 for (String tokenA : tokensA) {
                     tokenA = compoundTokenEdit(tokenA);
-                    if(!tokenCheck(tokenA)){
+                    if(tokenCheck(tokenA)){
                         tokensL.add(tokenA);
                     }
                 }
@@ -139,10 +141,10 @@ public class TopicExtractionMethods {
      * @param token original token
      */
     private static boolean tokenCheck(String token) {
-        return token.isEmpty()
-                || tokenIsLink(token)
-                || tokenIsNumber(token.replaceAll(PUNCT, ""))
-                || tokensLengthIsNotOk(token, 1, 30);
+        return !token.isEmpty()
+                && !tokenIsLink(token)
+                && !tokenIsNumber(token.replaceAll(PUNCT, ""))
+                && !tokensLengthIsNotOk(token, 1, 30);
     }
 
     /**
@@ -164,7 +166,7 @@ public class TopicExtractionMethods {
      */
     private static boolean tokenIsNumber(String token) {
         try {
-            Double d = Double.parseDouble(token);
+            Double.parseDouble(token);
             return true;
         } catch (NumberFormatException e) {
             return false;
@@ -200,20 +202,23 @@ public class TopicExtractionMethods {
      * returns a sorted list (set) of sorted compounds of tokens
      * @param msgs original msgs object (with calculated simple and compound tokens)
      */
-    private static Set<String> getUniqueWords(List<TEMessage> msgs) {
-        Set<String> uniqueWords = new TreeSet<>();
+    private static Map<String, String> getUniqueWords(List<TEMessage> msgs) {
+        Map<String, String> uniqueWords = new TreeMap<>();
         for (TEMessage msg : msgs) {
             for (TEMessageToken token: msg.getTokens()){
-                uniqueWords.addAll(token.getCompound());
+                for (String compound: token.getCompound()){
+                    uniqueWords.put(compound, null);
+                }
             }
         }
         return uniqueWords;
     }
 
-    private static void saveSet(String filename, Set<String> uniqueWords) throws IOException{
+    private static void saveSet(String filename, Map<String, String> words) throws IOException{
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename, false), Charset.forName("UTF-8")));
-        for (String word: uniqueWords){
-            writer.write(word + "\r\n");
+        Set<String> keys = words.keySet();
+        for (String key: keys){
+            writer.write(key + "\r\n");
         }
         writer.close();
     }

@@ -30,6 +30,7 @@ import storage.db.DBStorage;
 import storage.db.mongo.MongoDBStorage;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class CrawlerMain {
@@ -67,11 +68,11 @@ public class CrawlerMain {
         AuthMethods.auth(api, apiState, APIKEY, APIHASH, PHONENUMBER, Optional.<String>empty(), Optional.<String>empty());
 
         // dialogs, chats, users structures
-        HashMap<Integer, TLAbsChat> chatsHashMap = new HashMap<>();
-        HashMap<Integer, TLAbsUser> usersHashMap = new HashMap<>();
+        Map<Integer, TLAbsChat> chatsHashMap = new HashMap<>();
+        Map<Integer, TLAbsUser> usersHashMap = new HashMap<>();
         TLVector<TLDialog> dialogs = new TLVector<>();
         //hashmap with top messages (needed for offsets)
-        HashMap<Integer, TLAbsMessage> messagesHashMap = new HashMap<>();
+        Map<Integer, TLAbsMessage> messagesHashMap = new HashMap<>();
 
         // get all dialogs of user (telegram returns 100 dialogs at maximum, getting by slices)
         DialogsHistoryMethods.getDialogsChatsUsers(api, dialogs, chatsHashMap, usersHashMap, messagesHashMap);
@@ -99,7 +100,7 @@ public class CrawlerMain {
         //CrawlingMethods.saveMessagesToDBFilesToDB(api, dbStorage, dialogs, chatsHashMap, usersHashMap, messagesHashMap, messagesLimit, participantsLimit, filter, maxDate, minDate, maxFileSize);
 
         //Saves only media to DB
-        //CrawlingMethods.saveOnlyMediaToDB(api, dbStorage, dialogs, chatsHashMap, usersHashMap, messagesHashMap, messagesLimit, maxDate, minDate, maxFileSize);
+        //CrawlingMethods.saveOnlyMediaToDB(api, dbStorage, dialogs, chatsHashMap, usersHashMap, messagesHashMap, messagesLimit, maxDate, minDate);
 
         //Saves only media to HDD
         //CrawlingMethods.saveOnlyMediaToHDD(api, dbStorage, dialogs, chatsHashMap, usersHashMap, messagesHashMap, messagesLimit, maxDate, minDate, maxFileSize, filesPath);

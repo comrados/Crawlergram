@@ -15,26 +15,26 @@ import org.telegram.tl.TLVector;
 import topicextractor.structures.TEDialog;
 import topicextractor.structures.TEMessage;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface DBStorage {
 
     /**
      * Sets target of writing or reading (table, collection, etc.) in db
-     * @param target
+     * @param target target's name
      */
     void setTarget(String target);
 
     /**
      * Drops target table, collection, etc. in db
-     * @param target
+     * @param target target's name
      */
     void dropTarget(String target);
 
     /**
      * Sets current db
-     * @param database
+     * @param database db name
      */
     void setDatabase(String database);
 
@@ -45,113 +45,113 @@ public interface DBStorage {
 
     /**
      * write object to db
-     * @param obj
+     * @param obj object
      */
     void write(Object obj);
 
     /**
      * writes full dialog to db
-     * @param dial
-     * @param chatsHashMap
-     * @param usersHashMap
+     * @param dial dialog
+     * @param chatsHashMap map of chats
+     * @param usersHashMap map of users
      */
-    void writeFullDialog(TLObject dial, HashMap<Integer, TLAbsChat> chatsHashMap, HashMap<Integer, TLAbsUser> usersHashMap);
+    void writeFullDialog(TLObject dial, Map<Integer, TLAbsChat> chatsHashMap, Map<Integer, TLAbsUser> usersHashMap);
 
     /**
      * writes users hashmap to db
-     * @param usersHashMap
+     * @param usersHashMap maf of users
      */
-    void writeUsersHashMap(HashMap<Integer, TLAbsUser> usersHashMap);
+    void writeUsersHashMap(Map<Integer, TLAbsUser> usersHashMap);
 
     /**
      * writes chats hashmap to db
-     * @param chatsHashMap
+     * @param chatsHashMap map of chats
      */
-    void writeChatsHashMap(HashMap<Integer, TLAbsChat> chatsHashMap);
+    void writeChatsHashMap(Map<Integer, TLAbsChat> chatsHashMap);
 
     /**
      * writes participants
-     * @param participants
-     * @param dialog
+     * @param participants participants
+     * @param dialog dialog
      */
     void writeParticipants(TLObject participants, TLDialog dialog);
 
     /**
      * Writes messages from dialogs to DB (each dialog to a single collection)
-     * @param absMessages
-     * @param dialog
+     * @param absMessages messages
+     * @param dialog dialog
      */
     void writeTLAbsMessages(TLVector<TLAbsMessage> absMessages, TLDialog dialog);
 
     /**
      * Write a single TLAbsMessage to DB
-     * @param absMessage
+     * @param absMessage message
      */
     void writeTLAbsMessage(TLAbsMessage absMessage);
 
     /**
      * Writes messages from dialogs to DB (each dialog to a single collection) with reference to the saved file
-     * @param absMessage
-     * @param filePath
+     * @param absMessage message
+     * @param filePath file reference
      */
     void writeTLAbsMessageWithReference(TLAbsMessage absMessage, String filePath);
 
     /**
      * max id of the message from a particular chat
-     * @param dialog
+     * @param dialog dialog
      */
     Integer getMessageMaxId(TLDialog dialog);
 
     /**
      * min id of the message from a particular chat
-     * @param dialog
+     * @param dialog dialog
      */
     Integer getMessageMinId(TLDialog dialog);
 
     /**
      * date of min id message from a particular chat
-     * @param dialog
+     * @param dialog dialog
      */
     Integer getMessageMinIdDate(TLDialog dialog);
 
     /**
      * date of max id message from a particular chat
-     * @param dialog
+     * @param dialog dialog
      */
     Integer getMessageMaxIdDate(TLDialog dialog);
 
     /**
      * writes bytes to GridFS
-     * @param name
-     * @param bytes
+     * @param name filename
+     * @param bytes bytes
      */
     void writeFile(String name, byte[] bytes);
 
     /**
      * creates single field index
-     * @param field
+     * @param field indexing field
      * @param type switch: 1 - ascending, -1 - descending, default - ascending
      */
     void createIndex(String field, int type);
 
     /**
      * creates composite index
-     * @param fields
+     * @param fields indexing fields
      * @param types switch: 1 - ascending, -1 - descending, default - ascending
      */
     void createIndex(List<String> fields, List<Integer> types);
 
     /**
      * reads all messages from DB
-     * @param target
+     * @param target target dialog
      */
     List<TEMessage> readMessages(TEDialog target);
 
     /**
      * reads messages between two dates from DB
-     * @param target
-     * @param dateFrom
-     * @param dateTo
+     * @param target target dialog
+     * @param dateFrom date from
+     * @param dateTo date to
      */
     List<TEMessage> readMessages(TEDialog target, int dateFrom, int dateTo);
 
@@ -162,7 +162,7 @@ public interface DBStorage {
 
     /**
      * saves files from DB to HDD
-     * @param path
+     * @param path path
      */
     void saveFilesToHDD(String path);
 

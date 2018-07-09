@@ -126,7 +126,6 @@ public class MediaDownloadMethods {
      * @param api api
      * @param mediaPhoto photo media
      * @param maxSize max size for downloading
-     * @return
      */
     private static byte[] messageMediaPhotoGet(TelegramApi api, TLMessageMediaPhoto mediaPhoto, int maxSize){
         byte[] bytes = null;
@@ -137,7 +136,7 @@ public class MediaDownloadMethods {
             TLVector<TLAbsPhotoSize> absPhotoSizes = photo.getSizes();
             // last photo size - largest one
             TLPhotoSize photoSize = FileMethods.getLargestAvailablePhotoSize(absPhotoSizes);
-            bytes = messagePhotoSizeOutput(api, photoSize, photo, maxSize);
+            bytes = messagePhotoSizeOutput(api, photoSize, maxSize);
         }
         return bytes;
     }
@@ -145,11 +144,10 @@ public class MediaDownloadMethods {
     /**
      * Outputs web page media in console
      * @param	photoSize   TLPhotoSize instance
-     * @param   photo   TLPhoto instance, which contains photoSizeCached
      * @see	TLPhotoSize
      * @see TLPhoto
      */
-    private static byte[] messagePhotoSizeOutput(TelegramApi api, TLPhotoSize photoSize, TLPhoto photo, int maxSize){
+    private static byte[] messagePhotoSizeOutput(TelegramApi api, TLPhotoSize photoSize, int maxSize){
         byte[] bytes = null;
         // file location
         TLAbsFileLocation absFileLoc = photoSize.getLocation();

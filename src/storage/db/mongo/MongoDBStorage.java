@@ -308,7 +308,7 @@ public class MongoDBStorage implements DBStorage {
      * @param usersHashMap prevents unnecessary downloading by getting data from HashMap
      */
     @Override
-    public void writeFullDialog(TLObject dial, HashMap<Integer, TLAbsChat> chatsHashMap, HashMap<Integer, TLAbsUser> usersHashMap){
+    public void writeFullDialog(TLObject dial, Map<Integer, TLAbsChat> chatsHashMap, Map<Integer, TLAbsUser> usersHashMap){
         // set target
         this.setTarget(DIALOGS);
         // write it
@@ -330,7 +330,7 @@ public class MongoDBStorage implements DBStorage {
      * @param usersHashMap hashmap
      */
     @Override
-    public void writeUsersHashMap(HashMap<Integer, TLAbsUser> usersHashMap) {
+    public void writeUsersHashMap(Map<Integer, TLAbsUser> usersHashMap) {
         // set target
         this.setTarget(USERS_COL);
         // write
@@ -346,7 +346,7 @@ public class MongoDBStorage implements DBStorage {
      * @param chatsHashMap hashmap
      */
     @Override
-    public void writeChatsHashMap(HashMap<Integer, TLAbsChat> chatsHashMap) {
+    public void writeChatsHashMap(Map<Integer, TLAbsChat> chatsHashMap) {
         // set target
         this.setTarget(CHATS_COL);
         // write
@@ -771,8 +771,8 @@ public class MongoDBStorage implements DBStorage {
         try {
             List<GridFSFile> files = new LinkedList<>();
             GridFSFindIterable gfsi = gridFSBucket.find();
-            for (MongoCursor<GridFSFile> it = gfsi.iterator(); it.hasNext();) {
-                files.add(it.next());
+            for (GridFSFile gfsf : gfsi) {
+                files.add(gfsf);
             }
             return files;
         } catch (MongoException e) {

@@ -21,7 +21,7 @@ import org.telegram.api.peer.TLPeerChat;
 import org.telegram.api.peer.TLPeerUser;
 import org.telegram.api.user.TLAbsUser;
 import org.telegram.api.user.TLUser;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class ConsoleOutputMethods {
@@ -47,11 +47,11 @@ public class ConsoleOutputMethods {
     /**
      * Outputs content of chats hashmap to console
      * @param	chatsHashMap  HashMap with chats
-     * @see HashMap
+     * @see Map
      * @see Set
      * @see TLAbsChat
      */
-    public static void testChatsHashMapOutputConsole(HashMap<Integer, TLAbsChat> chatsHashMap){
+    public static void testChatsHashMapOutputConsole(Map<Integer, TLAbsChat> chatsHashMap){
         Set<Integer> keysChats = chatsHashMap.keySet();
         for (Integer key : keysChats) {
             if (chatsHashMap.get(key) instanceof TLChannel) {
@@ -74,11 +74,11 @@ public class ConsoleOutputMethods {
     /**
      * Outputs content of users hashmap to console
      * @param	usersHashMap  HashMap with users
-     * @see HashMap
+     * @see Map
      * @see Set
      * @see TLAbsUser
      */
-    public static void testUsersHashMapOutputConsole(HashMap<Integer, TLAbsUser> usersHashMap){
+    public static void testUsersHashMapOutputConsole(Map<Integer, TLAbsUser> usersHashMap){
         Set<Integer> keysUsers = usersHashMap.keySet();
         for (Integer key : keysUsers) {
             System.out.println(usersHashMap.get(key).getId() + " User " + ((TLUser) usersHashMap.get(key)).getUserName() + " " +
@@ -87,7 +87,7 @@ public class ConsoleOutputMethods {
         System.out.println();
     }
 
-    public static String testOutHashMapObjectByKey(int key , HashMap<Integer, TLAbsChat> chatsHashMap, HashMap<Integer, TLAbsUser> usersHashMap){
+    public static String testOutHashMapObjectByKey(int key , Map<Integer, TLAbsChat> chatsHashMap, Map<Integer, TLAbsUser> usersHashMap){
         String out = "";
         Set<Integer> keysUsers = usersHashMap.keySet();
         Set<Integer> keysChats = chatsHashMap.keySet();

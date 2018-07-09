@@ -35,6 +35,7 @@ import org.telegram.api.message.TLMessageService;
 import org.telegram.api.messages.TLAbsMessages;
 import org.telegram.api.messages.TLMessagesChatFull;
 import org.telegram.api.messages.dialogs.TLAbsDialogs;
+import org.telegram.api.messages.dialogs.TLDialogs;
 import org.telegram.api.messages.dialogs.TLDialogsSlice;
 import org.telegram.api.peer.TLAbsPeer;
 import org.telegram.api.peer.TLPeerChannel;
@@ -50,6 +51,7 @@ import storage.db.MessageHistoryExclusions;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
@@ -67,10 +69,10 @@ public class DialogsHistoryMethods {
      */
     public static void getDialogsChatsUsers(TelegramApi api,
                                             TLVector<TLDialog> dialogs,
-                                            HashMap<Integer, TLAbsChat> chatsHashMap,
-                                            HashMap<Integer, TLAbsUser> usersHashMap,
-                                            HashMap<Integer, TLAbsMessage> messagesHashMap){
-        TLAbsDialogs absDialogs = null;
+                                            Map<Integer, TLAbsChat> chatsHashMap,
+                                            Map<Integer, TLAbsUser> usersHashMap,
+                                            Map<Integer, TLAbsMessage> messagesHashMap){
+        TLAbsDialogs absDialogs = new TLDialogs();
         Set<Integer> dialogIdSet = new HashSet<>();
         // read dialogs
         try {
@@ -131,9 +133,9 @@ public class DialogsHistoryMethods {
      */
     private static void setDialogsChatsUsersStructures(TLAbsDialogs absDialogs,
                                                        TLVector<TLDialog> dialogs,
-                                                       HashMap<Integer, TLAbsChat> chatsHashMap,
-                                                       HashMap<Integer, TLAbsUser> usersHashMap,
-                                                       HashMap<Integer, TLAbsMessage> messagesHashMap,
+                                                       Map<Integer, TLAbsChat> chatsHashMap,
+                                                       Map<Integer, TLAbsUser> usersHashMap,
+                                                       Map<Integer, TLAbsMessage> messagesHashMap,
                                                        Set<Integer> dialogSet){
         insertIntoChatsHashMap(chatsHashMap, absDialogs.getChats());
         insertIntoUsersHashMap(usersHashMap, absDialogs.getUsers());
@@ -196,8 +198,8 @@ public class DialogsHistoryMethods {
      */
     public static TLVector<TLAbsMessage> getOnlyUsersMessagesHistory(TelegramApi api,
                                                                      TLDialog dialog,
-                                                                     HashMap<Integer, TLAbsChat> chatsHashMap,
-                                                                     HashMap<Integer, TLAbsUser> usersHashMap,
+                                                                     Map<Integer, TLAbsChat> chatsHashMap,
+                                                                     Map<Integer, TLAbsUser> usersHashMap,
                                                                      int limit) {
         // sleep time (Telegram can send FLOOD WAIT ERROR if the requests are done too often)
         int sleepTime = 100;
@@ -212,7 +214,7 @@ public class DialogsHistoryMethods {
                 TLRequestMessagesGetHistory getHistory = SetTLObjectsMethods.getHistoryRequestSet(dialog, chatsHashMap, usersHashMap, 100, offDate, offId);
                 TLAbsMessages absMessages = api.doRpcCall(getHistory);
                 // if returns no messages -> break the loop
-                if (absMessages.getMessages().isEmpty() || absMessages == null || absMessages.getMessages() == null){ break; }
+                if (absMessages == null || absMessages.getMessages().isEmpty() || absMessages.getMessages() == null){ break; }
                 // update known users and chats hashmaps
                 insertIntoChatsHashMap(chatsHashMap, absMessages.getChats());
                 insertIntoUsersHashMap(usersHashMap, absMessages.getUsers());
@@ -226,7 +228,7 @@ public class DialogsHistoryMethods {
                 // offsets: last offset + chunk size (100)
                 offId = ((TLMessage) messages.get(messages.size()-1)).getId();
                 offDate = ((TLMessage) messages.get(messages.size()-1)).getDate();
-                try {Thread.sleep(sleepTime);} catch (InterruptedException e) {}
+                try {Thread.sleep(sleepTime);} catch (InterruptedException ignored) {}
             }
         } catch (RpcException e) {
             System.err.println(e.getErrorTag() + " " + e.getErrorCode());
@@ -245,15 +247,8 @@ public class DialogsHistoryMethods {
      * @param receivedMsgs number of received messages
      * @param limit messages limit (if 0 - infinity)
      */
-    private static boolean receivedMessagesCheck(int receivedMsgs, int limit){
-        boolean boo = false;
-        if (limit == 0){
-            return true;
-        } else if (receivedMsgs <= limit){
-            return true;
-        } else {
-            return false;
-        }
+    private static boolean receivedMessagesCheck(int receivedMsgs, int limit) {
+        return limit == 0 || receivedMsgs <= limit;
     }
 
     /**
@@ -305,8 +300,8 @@ public class DialogsHistoryMethods {
      */
     public static TLVector<TLAbsMessage> getWholeMessagesHistory(TelegramApi api,
                                                                  TLDialog dialog,
-                                                                 HashMap<Integer, TLAbsChat> chatsHashMap,
-                                                                 HashMap<Integer, TLAbsUser> usersHashMap,
+                                                                 Map<Integer, TLAbsChat> chatsHashMap,
+                                                                 Map<Integer, TLAbsUser> usersHashMap,
                                                                  TLAbsMessage topMessage,
                                                                  int limit, int maxDate, int minDate) {
         TLVector<TLAbsMessage> messages = new TLVector<>();
@@ -350,14 +345,14 @@ public class DialogsHistoryMethods {
     /**
      * Try 2 times to get messages, if fails - return null. Each iteration time sleep time increases x10.
      * @param api TelegramApi instance for RPC request
-     * @param getHistory request object
+     * @param getHistoryMethod request object
      * @param sleepTime sleep time
      * @param depth recursion depth (set default depth as 1)
      * @see TelegramApi
      * @see TLRequestMessagesGetHistory
      */
     private static TLObject sleepAndRequest(TelegramApi api,
-                                            TLMethod getHistory,
+                                            TLMethod getHistoryMethod,
                                             int sleepTime, int depth){
         Integer time;
         if ((depth != 0) && (sleepTime < 1000)){
@@ -371,7 +366,7 @@ public class DialogsHistoryMethods {
         // try to get messages, in case of fail fail - try again, but later
         if (depth < 2){
             try {
-                tlObject = api.doRpcCall(getHistory);
+                tlObject = api.doRpcCall(getHistoryMethod);
             } catch (RpcException e) {
                 System.err.println("RPC: "+e.getErrorTag()+ " " + e.getErrorCode());
                 int timeSleep = time;
@@ -383,12 +378,12 @@ public class DialogsHistoryMethods {
                         } catch (Error ignored) {}
                     }
                     System.err.println("Depth: " + depth + ", Sleep time: " + timeSleep + " " + e.getErrorTag() + " " + e.getErrorCode());
-                    tlObject = sleepAndRequest(api, getHistory, timeSleep, ++depth);
+                    tlObject = sleepAndRequest(api, getHistoryMethod, timeSleep, ++depth);
                 }
             } catch (TimeoutException | IOException e) {
                 System.err.println("TIMEOUT/IEO : "+ e.getMessage());
                 System.err.println("Depth: "+ depth + ", Sleep time: " + time*10 + " " + e.getMessage());
-                tlObject = sleepAndRequest(api, getHistory, time*10, ++depth);
+                tlObject = sleepAndRequest(api, getHistoryMethod, time*10, ++depth);
             }
         }
         return tlObject;
@@ -399,7 +394,7 @@ public class DialogsHistoryMethods {
             try {
                 iter = 0;
                 Thread.sleep(1000);
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException ignored) {}
         } else {iter++;}
         return iter;
     }
@@ -496,7 +491,7 @@ public class DialogsHistoryMethods {
      * @param dialog dialog
      * @param messagesHashMap top messages
      */
-    public static TLAbsMessage getTopMessage(TLDialog dialog, HashMap<Integer, TLAbsMessage> messagesHashMap){
+    public static TLAbsMessage getTopMessage(TLDialog dialog, Map<Integer, TLAbsMessage> messagesHashMap){
         TLAbsMessage msg = messagesHashMap.get(dialog.getPeer().getId());
         if (msg instanceof TLMessage){
             return msg;
@@ -582,8 +577,8 @@ public class DialogsHistoryMethods {
      */
     public static TLObject getFullDialog(TelegramApi api,
                                          TLDialog dialog,
-                                         HashMap<Integer, TLAbsChat> chatsHashMap,
-                                         HashMap<Integer, TLAbsUser> usersHashMap){
+                                         Map<Integer, TLAbsChat> chatsHashMap,
+                                         Map<Integer, TLAbsUser> usersHashMap){
         TLObject fullDialog = null;
         TLAbsPeer peer = dialog.getPeer();
         int peerId = peer.getId();
@@ -639,8 +634,8 @@ public class DialogsHistoryMethods {
      * @param limit max retrieved participants
      * @param filter filter for participants retrieval: 0 - recent, 1 - admins, 2 - kicked, 3 - bots, default - recent
      */
-    public static TLObject getParticipants(TelegramApi api, TLObject full, HashMap<Integer, TLAbsChat> chatsHashMap,
-                                           HashMap<Integer, TLAbsUser> usersHashMap, int limit, int filter) {
+    public static TLObject getParticipants(TelegramApi api, TLObject full, Map<Integer, TLAbsChat> chatsHashMap,
+                                           Map<Integer, TLAbsUser> usersHashMap, int limit, int filter) {
         TLObject participants = null;
         if (full instanceof TLMessagesChatFull) {
             TLAbsChatFull absChatFull = ((TLMessagesChatFull) full).getFullChat();
@@ -675,14 +670,13 @@ public class DialogsHistoryMethods {
      * @param filter filter for participants retrieval: 0 - recent, 1 - admins, 2 - kicked, 3 - bots, default - recent
      */
     private static TLChannelParticipants getChannelParticipants(TelegramApi api, TLChannelFull channelFull,
-                                                                HashMap<Integer, TLAbsChat> chatsHashMap,
-                                                                HashMap<Integer, TLAbsUser> usersHashMap,
+                                                                Map<Integer, TLAbsChat> chatsHashMap,
+                                                                Map<Integer, TLAbsUser> usersHashMap,
                                                                 int limit, int filter) {
         TLChannelParticipants channelParticipants = new TLChannelParticipants();
         TLVector<TLAbsUser> users = new TLVector<>();
         TLVector<TLAbsChannelParticipant> participants = new TLVector<>();
         Set<Integer> participantsIdSet = new HashSet<>();
-        int count = 0;
         // if need to retrieve all participants
         if ((channelFull != null) && (limit == 0)) {
             limit = channelFull.getParticipantsCount();
@@ -790,8 +784,8 @@ public class DialogsHistoryMethods {
      */
     public static TLVector<TLAbsMessage> getWholeMessagesHistoryWithExclusions(TelegramApi api,
                                                                                TLDialog dialog,
-                                                                               HashMap<Integer, TLAbsChat> chatsHashMap,
-                                                                               HashMap<Integer, TLAbsUser> usersHashMap,
+                                                                               Map<Integer, TLAbsChat> chatsHashMap,
+                                                                               Map<Integer, TLAbsUser> usersHashMap,
                                                                                TLAbsMessage topMessage,
                                                                                MessageHistoryExclusions exclusions,
                                                                                int limit, int maxDate, int minDate) {
@@ -863,11 +857,11 @@ public class DialogsHistoryMethods {
     /**
      * Creates and inits chats hashmap
      * @param   chats   TLVector with chats
-     * @see HashMap<Integer, TLAbsChat>
+     * @see Map
      * @see TLVector<TLAbsChat>
      */
-    public static HashMap<Integer, TLAbsChat> initChatsHashMap(TLVector<TLAbsChat> chats){
-        HashMap<Integer, TLAbsChat> chatsHashMap = new HashMap<Integer, TLAbsChat>();
+    private static Map<Integer, TLAbsChat> initChatsHashMap(TLVector<TLAbsChat> chats){
+        Map<Integer, TLAbsChat> chatsHashMap = new HashMap<>();
         chats.forEach(chat -> chatsHashMap.put(chat.getId(), chat));
         return chatsHashMap;
     }
@@ -875,11 +869,11 @@ public class DialogsHistoryMethods {
     /**
      * Creates and inits users hashmap
      * @param   users   TLVector with users
-     * @see HashMap<Integer, TLAbsUser>
+     * @see Map
      * @see TLVector<TLAbsUser>
      */
-    public static HashMap<Integer, TLAbsUser> initUsersHashMap(TLVector<TLAbsUser> users){
-        HashMap<Integer, TLAbsUser> usersHashMap = new HashMap<Integer, TLAbsUser>();
+    private static Map<Integer, TLAbsUser> initUsersHashMap(TLVector<TLAbsUser> users){
+        Map<Integer, TLAbsUser> usersHashMap = new HashMap<>();
         users.forEach(user -> usersHashMap.put(user.getId(), user));
         return usersHashMap;
     }
@@ -887,10 +881,10 @@ public class DialogsHistoryMethods {
     /**
      * Insert chats in existing hashmap (if key does not exist)
      * @param   chats   TLVector with chats
-     * @see HashMap<Integer, TLAbsChat>
+     * @see Map
      * @see TLVector<TLAbsChat>
      */
-    public static void insertIntoChatsHashMap(HashMap<Integer, TLAbsChat> chatsHashMap, TLVector<TLAbsChat> chats){
+    private static void insertIntoChatsHashMap(Map<Integer, TLAbsChat> chatsHashMap, TLVector<TLAbsChat> chats){
         for (TLAbsChat chat: chats){
             if (!chatsHashMap.containsKey(chat.getId())){
                 chatsHashMap.put(chat.getId(), chat);
@@ -901,10 +895,10 @@ public class DialogsHistoryMethods {
     /**
      * Insert users in existing hashmap (if key does not exist)
      * @param   users   TLVector with users
-     * @see HashMap<Integer, TLAbsUser>
+     * @see Map
      * @see TLVector<TLAbsUser>
      */
-    public static void insertIntoUsersHashMap(HashMap<Integer, TLAbsUser> usersHashMap, TLVector<TLAbsUser> users){
+    private static void insertIntoUsersHashMap(Map<Integer, TLAbsUser> usersHashMap, TLVector<TLAbsUser> users){
         for (TLAbsUser user: users){
             if (!usersHashMap.containsKey(user.getId())){
                 usersHashMap.put(user.getId(), user);
@@ -915,10 +909,10 @@ public class DialogsHistoryMethods {
     /**
      * Insert messages in existing hashmap (if key does not exist)
      * @param   messages   TLVector with messages
-     * @see HashMap<Integer, TLAbsUser>
+     * @see Map
      * @see TLVector<TLAbsUser>
      */
-    public static void insertIntoMessagesHashMap(HashMap<Integer, TLAbsMessage> messagesHashMap,
+    private static void insertIntoMessagesHashMap(Map<Integer, TLAbsMessage> messagesHashMap,
                                                  TLVector<TLAbsMessage> messages){
         for (TLAbsMessage message: messages){
             if ((message instanceof TLMessage) && !messagesHashMap.containsKey(message.getChatId())){

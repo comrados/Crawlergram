@@ -16,7 +16,7 @@ import org.telegram.tl.TLVector;
 import storage.db.DBStorage;
 import storage.db.MessageHistoryExclusions;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import static storage.db.Constants.MSG_DIAL_PREF;
 
@@ -37,9 +37,9 @@ public class CrawlingMethods {
      * @param   minDate min date of diapason for saving
      */
     public static void saveOnlyMessages(TelegramApi api, DBStorage dbStorage, TLVector<TLDialog> dialogs,
-                                        HashMap<Integer, TLAbsChat> chatsHashMap,
-                                        HashMap<Integer, TLAbsUser> usersHashMap,
-                                        HashMap<Integer, TLAbsMessage> messagesHashMap,
+                                        Map<Integer, TLAbsChat> chatsHashMap,
+                                        Map<Integer, TLAbsUser> usersHashMap,
+                                        Map<Integer, TLAbsMessage> messagesHashMap,
                                         int msgLimit, int parLimit, int filter, int maxDate, int minDate) {
         for (TLDialog dialog : dialogs) {
 
@@ -88,9 +88,9 @@ public class CrawlingMethods {
      * @param   path    file system path
      */
     public static void saveOnlyMediaToHDD(TelegramApi api, DBStorage dbStorage, TLVector<TLDialog> dialogs,
-                                          HashMap<Integer, TLAbsChat> chatsHashMap,
-                                          HashMap<Integer, TLAbsUser> usersHashMap,
-                                          HashMap<Integer, TLAbsMessage> messagesHashMap,
+                                          Map<Integer, TLAbsChat> chatsHashMap,
+                                          Map<Integer, TLAbsUser> usersHashMap,
+                                          Map<Integer, TLAbsMessage> messagesHashMap,
                                           int msgLimit, int maxDate, int minDate, int maxSize, String path) {
         for (TLDialog dialog : dialogs) {
 
@@ -127,10 +127,10 @@ public class CrawlingMethods {
      * @param   minDate min date of diapason for saving
      */
     public static void saveOnlyMediaToDB(TelegramApi api, DBStorage dbStorage, TLVector<TLDialog> dialogs,
-                                          HashMap<Integer, TLAbsChat> chatsHashMap,
-                                          HashMap<Integer, TLAbsUser> usersHashMap,
-                                          HashMap<Integer, TLAbsMessage> messagesHashMap,
-                                          int msgLimit, int maxDate, int minDate, int maxSize) {
+                                          Map<Integer, TLAbsChat> chatsHashMap,
+                                          Map<Integer, TLAbsUser> usersHashMap,
+                                          Map<Integer, TLAbsMessage> messagesHashMap,
+                                          int msgLimit, int maxDate, int minDate) {
         for (TLDialog dialog : dialogs) {
 
             MessageHistoryExclusions exclusions = new MessageHistoryExclusions(dbStorage, dialog);
@@ -170,9 +170,9 @@ public class CrawlingMethods {
      * @param   path    file system path
      */
     public static void saveMessagesToDBFilesToHDD(TelegramApi api, DBStorage dbStorage, TLVector<TLDialog> dialogs,
-                                            HashMap<Integer, TLAbsChat> chatsHashMap,
-                                            HashMap<Integer, TLAbsUser> usersHashMap,
-                                            HashMap<Integer, TLAbsMessage> messagesHashMap,
+                                            Map<Integer, TLAbsChat> chatsHashMap,
+                                            Map<Integer, TLAbsUser> usersHashMap,
+                                            Map<Integer, TLAbsMessage> messagesHashMap,
                                             int msgLimit, int parLimit, int filter, int maxDate, int minDate, int maxSize, String path) {
         for (TLDialog dialog : dialogs) {
 
@@ -230,9 +230,9 @@ public class CrawlingMethods {
      * @param   maxSize max allowed size of file to download
      */
     public static void saveMessagesToDBFilesToDB(TelegramApi api, DBStorage dbStorage, TLVector<TLDialog> dialogs,
-                                                  HashMap<Integer, TLAbsChat> chatsHashMap,
-                                                  HashMap<Integer, TLAbsUser> usersHashMap,
-                                                  HashMap<Integer, TLAbsMessage> messagesHashMap,
+                                                  Map<Integer, TLAbsChat> chatsHashMap,
+                                                  Map<Integer, TLAbsUser> usersHashMap,
+                                                  Map<Integer, TLAbsMessage> messagesHashMap,
                                                   int msgLimit, int parLimit, int filter, int maxDate, int minDate, int maxSize) {
         for (TLDialog dialog : dialogs) {
 

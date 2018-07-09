@@ -42,8 +42,7 @@ import org.telegram.api.user.TLAbsUser;
 import org.telegram.api.user.TLUser;
 import org.telegram.tl.TLBytes;
 
-import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.Scanner;
 
 public class SetTLObjectsMethods {
@@ -208,7 +207,7 @@ public class SetTLObjectsMethods {
      * @param   offId  offset id
      * @see	TLRequestMessagesGetHistory
      */
-    public static TLRequestMessagesGetHistory getMesHistSet(TLAbsInputPeer peer, int limit, int offDate, int offId){
+    private static TLRequestMessagesGetHistory getMesHistSet(TLAbsInputPeer peer, int limit, int offDate, int offId){
         TLRequestMessagesGetHistory getMesHist = new TLRequestMessagesGetHistory();
         getMesHist.setPeer(peer);
         getMesHist.setLimit(limit);
@@ -226,7 +225,7 @@ public class SetTLObjectsMethods {
      * @param   accessHash   access hash
      * @see	TLInputPeerChannel
      */
-    public static TLInputPeerChannel inputPeerChannelSet(int id, long accessHash){
+    private static TLInputPeerChannel inputPeerChannelSet(int id, long accessHash){
         TLInputPeerChannel channel = new TLInputPeerChannel();
         channel.setChannelId(id);
         channel.setAccessHash(accessHash);
@@ -239,7 +238,7 @@ public class SetTLObjectsMethods {
      * @param   accessHash   access hash
      * @see	TLInputPeerUser
      */
-    public static TLInputPeerUser inputPeerUserSet(int id, long accessHash){
+    private static TLInputPeerUser inputPeerUserSet(int id, long accessHash){
         TLInputPeerUser user = new TLInputPeerUser();
         user.setUserId(id);
         user.setAccessHash(accessHash);
@@ -251,7 +250,7 @@ public class SetTLObjectsMethods {
      * @param	id	chat id
      * @see	TLInputPeerChat
      */
-    public static TLInputPeerChat inputPeerChatSet(int id){
+    private static TLInputPeerChat inputPeerChatSet(int id){
         TLInputPeerChat chat = new TLInputPeerChat();
         chat.setChatId(id);
         return chat;
@@ -309,12 +308,11 @@ public class SetTLObjectsMethods {
      * @param   offDate offset date
      * @param   offId  offset id
      * @see TLRequestMessagesGetHistory
-     * @see HashMap <Integer,  TLAbsUser >
-     * @see HashMap<Integer,  TLAbsChat >
+     * @see Map
      */
     public static TLRequestMessagesGetHistory getHistoryRequestSet(TLDialog dialog,
-                                                                   HashMap<Integer, TLAbsChat> chatsHashMap,
-                                                                   HashMap<Integer, TLAbsUser> usersHashMap,
+                                                                   Map<Integer, TLAbsChat> chatsHashMap,
+                                                                   Map<Integer, TLAbsUser> usersHashMap,
                                                                    int limit, int offDate, int offId){
         TLRequestMessagesGetHistory getHistory = new TLRequestMessagesGetHistory();
         int peerId = dialog.getPeer().getId();
@@ -340,12 +338,11 @@ public class SetTLObjectsMethods {
      * @param   chatsHashMap    chats hashmap
      * @param   usersHashMap    users hashmap
      * @see TLAbsInputPeer
-     * @see HashMap <Integer,  TLAbsUser >
-     * @see HashMap<Integer,  TLAbsChat >
+     * @see Map
      */
     public static TLAbsInputPeer getAbsInputPeerSet(TLAbsPeer peer,
-                                                    HashMap<Integer, TLAbsChat> chatsHashMap,
-                                                    HashMap<Integer, TLAbsUser> usersHashMap){
+                                                    Map<Integer, TLAbsChat> chatsHashMap,
+                                                    Map<Integer, TLAbsUser> usersHashMap){
         TLAbsInputPeer absPeer = new TLInputPeerEmpty();
         int peerId = peer.getId();
         if (peer instanceof TLPeerChannel) {
@@ -365,9 +362,8 @@ public class SetTLObjectsMethods {
      * @param   peerId peer id
      * @param  chatsHashMap hashmap with chats
      * @see  TLInputPeerChannel
-     * @see Hashtable <Integer, TLAbsChat>
      */
-    private static TLInputPeerChannel getInputPeerChannelSet(int peerId, HashMap<Integer, TLAbsChat> chatsHashMap){
+    private static TLInputPeerChannel getInputPeerChannelSet(int peerId, Map<Integer, TLAbsChat> chatsHashMap){
         TLInputPeerChannel inputPeerChannel = new TLInputPeerChannel();
         // ... regular channel or...
         if (chatsHashMap.get(peerId) instanceof TLChannel) {
@@ -386,12 +382,10 @@ public class SetTLObjectsMethods {
      * @param   peerId peer id
      * @param  usersHashMap hashmap with users
      * @see  TLInputPeerUser
-     * @see Hashtable<Integer, TLAbsUser>
      */
-    private static TLInputPeerUser getInputPeerUserSet(int peerId, HashMap<Integer, TLAbsUser> usersHashMap){
+    private static TLInputPeerUser getInputPeerUserSet(int peerId, Map<Integer, TLAbsUser> usersHashMap){
         TLUser user = (TLUser) usersHashMap.get(peerId);
-        TLInputPeerUser inputPeerUser = SetTLObjectsMethods.inputPeerUserSet(peerId, user.getAccessHash());
-        return inputPeerUser;
+        return SetTLObjectsMethods.inputPeerUserSet(peerId, user.getAccessHash());
     }
 
     /**
@@ -400,7 +394,7 @@ public class SetTLObjectsMethods {
      * @param chatsHashMap hashmap with chats
      * @see  TLRequestChannelsGetFullChannel
      */
-    public static TLRequestChannelsGetFullChannel getFullChannelRequestSet(int peerId, HashMap<Integer, TLAbsChat> chatsHashMap){
+    public static TLRequestChannelsGetFullChannel getFullChannelRequestSet(int peerId, Map<Integer, TLAbsChat> chatsHashMap){
         TLRequestChannelsGetFullChannel fullChannel = new TLRequestChannelsGetFullChannel();
         fullChannel.setChannel(absInputChannelSet(peerId, chatsHashMap));
         return fullChannel;
@@ -411,7 +405,7 @@ public class SetTLObjectsMethods {
      * @param peerId peerId
      * @see  TLRequestChannelsGetFullChannel
      */
-    public static TLRequestMessagesGetFullChat getFullChatRequestSet(int peerId, HashMap<Integer, TLAbsChat> chatsHashMap){
+    public static TLRequestMessagesGetFullChat getFullChatRequestSet(int peerId, Map<Integer, TLAbsChat> chatsHashMap){
         TLRequestMessagesGetFullChat fullChat = new TLRequestMessagesGetFullChat();
         TLAbsChat chat = chatsHashMap.get(peerId);
         fullChat.setChatId(chat.getId());
@@ -424,7 +418,7 @@ public class SetTLObjectsMethods {
      * @param usersHashMap users
      * @see  TLRequestUsersGetFullUser
      */
-    public static TLRequestUsersGetFullUser getFullUserRequestSet(int peerId, HashMap<Integer, TLAbsUser> usersHashMap){
+    public static TLRequestUsersGetFullUser getFullUserRequestSet(int peerId, Map<Integer, TLAbsUser> usersHashMap){
         TLRequestUsersGetFullUser fullUser = new TLRequestUsersGetFullUser();
         fullUser.setId(absInputUserSet(peerId, usersHashMap));
         return fullUser;
@@ -437,7 +431,7 @@ public class SetTLObjectsMethods {
      * @param  chatsHashMap hashmap with chats
      * @see  TLAbsInputChannel
      */
-    private static TLAbsInputChannel absInputChannelSet(int peerId, HashMap<Integer, TLAbsChat> chatsHashMap){
+    private static TLAbsInputChannel absInputChannelSet(int peerId, Map<Integer, TLAbsChat> chatsHashMap){
         TLInputChannel ic = new TLInputChannel();
         if (chatsHashMap.get(peerId) instanceof TLChannel){
             TLChannel chan = (TLChannel) chatsHashMap.get(peerId);
@@ -457,7 +451,7 @@ public class SetTLObjectsMethods {
      * @param  usersHashMap hashmap with users
      * @see  TLAbsInputChannel
      */
-    private static TLAbsInputUser absInputUserSet(int peerId, HashMap<Integer, TLAbsUser> usersHashMap) {
+    private static TLAbsInputUser absInputUserSet(int peerId, Map<Integer, TLAbsUser> usersHashMap) {
         TLAbsInputUser iu;
         if (usersHashMap.get(peerId) instanceof TLUser){
             TLUser u = (TLUser) usersHashMap.get(peerId);
@@ -481,7 +475,7 @@ public class SetTLObjectsMethods {
      * @param filterType 0 - recent, 1 - admins, 2 - kicked, 3 - bots, default - recent
      */
     public static TLRequestChannelsGetParticipants getChannelParticipantsRequestSet(int peerId,
-                                                                                    HashMap<Integer, TLAbsChat> chatsHashMap,
+                                                                                    Map<Integer, TLAbsChat> chatsHashMap,
                                                                                     int filterType, int offset){
         TLAbsChannelParticipantsFilter filter;
         switch (filterType){
