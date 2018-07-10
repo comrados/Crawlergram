@@ -20,16 +20,16 @@ import java.util.regex.Pattern;
 
 public class TopicExtractionMethods {
 
-    final private static String PUNCT = "[\\p{Punct}–…‹›§«»¿¡!?≠\'´\"‘’“”⟨⟩°※©℗®℠™—]";//punctuation
+    final private static String PUNCT = "[\\p{Punct}–…‹›§«»¿¡!?≠\'´\"‘’“”⟨⟩°※©℗®℠™—]"; // punctuation
     final private static String CHAR_REPEATS_BEG = "^((.)\\2)\\2+"; // same char doesn't repeat more than once at the beginning
     final private static String CHAR_REPEATS_MID_END = "((.)\\2)\\2+"; // same char doesn't appear more than twice at mid and end
-    final private static String DATASIZES = "^[0-9]+([kmgtp])?b(it)?(s)?$"; // data sizes
-    final private static String SECONDS = "^[0-9]+(nm)?s(ec)?(ond)?(s)?$"; // seconds
-    final private static String HOURS = "^[0-9]+h(our)?(s)?$"; // hours
-    final private static String METERS = "^[0-9]+(kmcdn)?m(eter)?(s)?$"; // meters
-    final private static String TIME = "^[0-9]+(ap)m"; // time
-    final private static String NUMBERS_SUP = "^[0-9]+(km|ish|th|nd|st|rd|g|x)+"; // numbers
-    final private static String HEX = "^([0]x)?[0-9a-f]+$"; // hexadecimal
+    final private static String DATASIZES = "^[0-9]+([kmgtp])?([bб])(it|yte|ит|айт)?(s)?$"; // data sizes
+    final private static String SECONDS = "^[0-9]+([nmнм])?([sс])(ec|ек)?(ond)?(s)?$"; // seconds
+    final private static String HOURS = "^[0-9]+([hч])(our)?(s)?$"; // hours
+    final private static String METERS = "^[0-9]+([skmcdnкмдн])?([mм])(eter)?(s)?$"; // meters
+    final private static String TIME = "^[0-9]+(ap)m$"; // time
+    final private static String NUMBERS_SUP = "^[0-9]+(([kmкм])+|(ish|th|nd|st|rd|g|x|ый|ой|ий))?[0-9]*$"; // numbers
+    final private static String HEX = "^([0]+x)[0-9a-f]+$"; // hexadecimal 0xCAFE1 (doesn't remove abbreviations as ABBA)
 
     final private static String CHAR_FILTER = "[^\u0000-\u1FFF]"; // filters all the characters that fall out this list
 
@@ -78,6 +78,7 @@ public class TopicExtractionMethods {
             Map<String, String> uniqueWords = getUniqueWords(msgs);
             uniqueWords = Gras.doStemming(uniqueWords, 5, 4, 0.8);
             System.out.println();
+            calcL(uniqueWords);
             try {
                 saveSet("words.txt", uniqueWords);
             } catch (IOException e) {
@@ -186,15 +187,15 @@ public class TopicExtractionMethods {
     private static String compoundTokenEdit(String token){
         String temp = token.toLowerCase();
         temp = temp.replaceAll(CHAR_FILTER, ""); //removes redundant characters, emoticons and so on
-        temp = temp.replaceAll(CHAR_REPEATS_BEG, "$2");
-        temp = temp.replaceAll(CHAR_REPEATS_MID_END, "$2$2");
-        temp = temp.replaceAll(DATASIZES, "bytes");
-        temp = temp.replaceAll(SECONDS, "seconds");
-        temp = temp.replaceAll(HOURS, "hours");
-        temp = temp.replaceAll(METERS, "meters");
-        temp = temp.replaceAll(NUMBERS_SUP, "numbers");
-        temp = temp.replaceAll(TIME, "time");
-        temp = temp.replaceAll(HEX, "hexadecimal");
+        temp = temp.replaceAll(CHAR_REPEATS_BEG, "$2"); // removes multiple char repeats a the beginning
+        temp = temp.replaceAll(CHAR_REPEATS_MID_END, "$2$2"); // removes char repeats (more than twice)
+        temp = temp.replaceAll(DATASIZES, "bytes"); // removes tokens such as 2kb, 15mb etc.
+        temp = temp.replaceAll(SECONDS, "seconds"); // removes tokens such as 2sec, 15s etc.
+        temp = temp.replaceAll(HOURS, "hours"); // removes tokens such as 2h, 15hours etc.
+        temp = temp.replaceAll(METERS, "meters"); // removes tokens such as 2m, 15meters etc.
+        temp = temp.replaceAll(NUMBERS_SUP, "numbers"); // removes tokens such as 2k, 15ish etc.
+        temp = temp.replaceAll(TIME, "time"); // removes tokens such as 2am 6pm
+        temp = temp.replaceAll(HEX, "hexadecimal"); // removes hexadecimal numbers
         return temp;
     }
 
@@ -221,6 +222,16 @@ public class TopicExtractionMethods {
             writer.write(key + "\r\n");
         }
         writer.close();
+    }
+
+    private static void calcL(Map<String, String> words){
+        Set<String> keys = words.keySet();
+        double totalL = 0.0;
+        int n = keys.size();
+        for (String key: keys){
+            totalL += key.length();
+        }
+        System.out.println(totalL/n);
     }
 
 }
