@@ -4,7 +4,7 @@
  * Creator: Georgii Mikriukov
  */
 
-package topicextractor.structures;
+package topicextractor.structures.message;
 
 import org.bson.Document;
 
@@ -15,12 +15,14 @@ public class TEMessage {
 
     private Integer id;
     private String text;
+    private String stemmedText;
     private Integer date;
     private List<TEMessageToken> tokens;
 
     public TEMessage(){
         this.id = 0;
         this.text = "";
+        this.stemmedText = null;
         this.date = 0;
         this.tokens = new LinkedList<>();
     }
@@ -28,6 +30,7 @@ public class TEMessage {
     public TEMessage(Integer id, String text, Integer date){
         this.id = id;
         this.text = text;
+        this.stemmedText = null;
         this.date = date;
         this.tokens = new LinkedList<>();
     }
@@ -46,6 +49,14 @@ public class TEMessage {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public String getStemmedText() {
+        return stemmedText;
+    }
+
+    public void setStemmedText(String stemmedText) {
+        this.stemmedText = stemmedText;
     }
 
     public Integer getDate() {

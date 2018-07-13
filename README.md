@@ -34,6 +34,7 @@ Maven:
   * To [Lonami](https://github.com/Lonami) for [Telethon](https://github.com/LonamiWebs/Telethon) library, which was used for clarifications in some tricky cases.
   * To [Ata Amini](https://www.codeproject.com/Members/Ata-Amini) for the implementation of [Gauss-Newton Algorithm](https://www.codeproject.com/Articles/1175992/Implementation-of-Gauss-Newton-Algorithm-in-Java).
   * To Giulio Busato and [Gianmaria Silvello](https://github.com/giansilv) for [GRAS-stemmer](https://github.com/giansilv/statisticalStemmers/tree/master/GRAS-master).
+  * To [Dat Quoc Nguyen] (https://github.com/datquocnguyen) for [jLDADMM](https://github.com/datquocnguyen/jLDADMM).
 
 ## License
 

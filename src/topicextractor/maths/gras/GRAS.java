@@ -12,7 +12,7 @@ package topicextractor.maths.gras;
 
 import java.util.*;
 
-public class Gras {
+public class GRAS {
 
     private static boolean debug=false;
 
@@ -26,7 +26,7 @@ public class Gras {
     public static Map<String, String> doStemming(Map<String, String> sortedWordSet, int l, int alpha, double delta){
         if ((sortedWordSet != null) && !sortedWordSet.isEmpty()){
             String[] words = sortedWordSet.keySet().toArray(new String[0]);
-            String[] stems = Gras.stemming(words, l, alpha, delta);
+            String[] stems = GRAS.stemming(words, l, alpha, delta);
             return combineOutput(words, stems);
         } else {
             return new HashMap<>();

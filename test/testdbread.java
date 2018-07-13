@@ -7,7 +7,7 @@
 import com.mongodb.client.gridfs.model.GridFSFile;
 import storage.db.mongo.MongoDBStorage;
 import topicextractor.structures.TEDialog;
-import topicextractor.structures.TEMessage;
+import topicextractor.structures.message.TEMessage;
 import org.bson.Document;
 
 import java.util.List;

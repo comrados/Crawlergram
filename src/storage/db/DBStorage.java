@@ -13,7 +13,7 @@ import org.telegram.api.user.TLAbsUser;
 import org.telegram.tl.TLObject;
 import org.telegram.tl.TLVector;
 import topicextractor.structures.TEDialog;
-import topicextractor.structures.TEMessage;
+import topicextractor.structures.message.TEMessage;
 
 import java.util.List;
 import java.util.Map;

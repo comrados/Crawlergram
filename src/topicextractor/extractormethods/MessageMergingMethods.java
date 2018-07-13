@@ -10,8 +10,8 @@ import topicextractor.maths.gaussnewton.ExpRegMethods;
 import topicextractor.maths.gaussnewton.GaussNewton;
 import topicextractor.maths.gaussnewton.NoSquareException;
 import topicextractor.structures.TEDialog;
-import topicextractor.structures.TEMessage;
-import topicextractor.structures.TEMessageComparator;
+import topicextractor.structures.message.TEMessage;
+import topicextractor.structures.message.TEMessageComparator;
 
 import java.util.*;
 
@@ -36,7 +36,6 @@ public class MessageMergingMethods {
         if (!(dialog.getType().equals("Channel") && ((dialog.getFlags() & 256) == 0) && (msgs.size() > 0))) {
                 msgs = mergeChat(msgs, docThreshold);
         }
-        removeEmptyMessages(msgs);
         return msgs;
     }
 
@@ -134,17 +133,4 @@ public class MessageMergingMethods {
             return mesCopy;
         }
     }
-
-    /**
-     * Removes empty messages from the list
-     * @param msgs messages list
-     */
-    private static void removeEmptyMessages(List<TEMessage> msgs){
-        for (int i = 0; i < msgs.size(); i++) {
-            if (msgs.get(i).getText().isEmpty()){
-                msgs.remove(i);
-            }
-        }
-    }
-
 }

@@ -4,7 +4,7 @@
  * Creator: Georgii Mikriukov
  */
 
-package topicextractor.structures;
+package topicextractor.structures.message;
 
 import java.util.Comparator;
 

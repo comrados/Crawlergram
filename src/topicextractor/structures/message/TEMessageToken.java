@@ -4,7 +4,7 @@
  * Creator: Georgii Mikriukov
  */
 
-package topicextractor.structures;
+package topicextractor.structures.message;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -12,21 +12,21 @@ import java.util.List;
 public class TEMessageToken {
 
     private String simple;
-    private List<String> compound;
+    private List<String> compounds;
 
     public TEMessageToken(){
         this.simple = "";
-        this.compound = new LinkedList<>();
+        this.compounds = new LinkedList<>();
     }
 
     public TEMessageToken(String simple, List<String> compound){
         this.simple = simple;
-        this.compound = compound;
+        this.compounds = compound;
     }
 
     public TEMessageToken(String simple){
         this.simple = simple;
-        this.compound = new LinkedList<>();
+        this.compounds = new LinkedList<>();
     }
 
     public String getSimple() {
@@ -37,12 +37,12 @@ public class TEMessageToken {
         this.simple = simple;
     }
 
-    public List<String> getCompound() {
-        return compound;
+    public List<String> getCompounds() {
+        return compounds;
     }
 
-    public void setCompound(List<String> compound) {
-        this.compound = compound;
+    public void setCompounds(List<String> compounds) {
+        this.compounds = compounds;
     }
 
 }

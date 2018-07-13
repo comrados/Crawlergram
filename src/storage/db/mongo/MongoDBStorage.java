@@ -78,7 +78,7 @@ import org.telegram.tl.TLObject;
 import org.telegram.tl.TLVector;
 import storage.db.DBStorage;
 import topicextractor.structures.TEDialog;
-import topicextractor.structures.TEMessage;
+import topicextractor.structures.message.TEMessage;
 
 import java.io.*;
 import java.util.*;

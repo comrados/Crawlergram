@@ -3,5 +3,5 @@ Written by Giulio Busato. Uploaded by [Gianmaria Silvello](https://github.com/gi
 Source code is [here](https://github.com/giansilv/statisticalStemmers/tree/master/GRAS-master).
 
 ### Related publications
-* GRAS: An Effective and Efficient Stemming Algorithm for Information Retrieval (DOI: 10.1145/2037661.2037664)
-* Statistical Stemmers: A Reproducibility Study
+* J. H. Paik, M. Mitra, S. K. Parui, K. Jarvelin, "GRAS: An Effective and Efficient Stemming Algorithm for Information Retrieval"
+* G. Silvello, R. Bucco, G. Busato, G. Fornari, A. Langeli, A. Purpura, G. Rocco, A. Tezza, M. Agosti, "Statistical Stemmers: A Reproducibility Study"
