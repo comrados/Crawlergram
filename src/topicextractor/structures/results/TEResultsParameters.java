@@ -76,10 +76,10 @@ public class TEResultsParameters {
     @Override
     public String toString() {
         return model + "\n"
-                + "topics" + numTopics + "\n"
-                + "iterations" + numIterations + "\n"
-                + "top words" + topWords + "\n"
-                + "alpha" + alpha + "\n"
-                + "beta" + beta + "\n";
+                + "topics " + numTopics + "\n"
+                + "iterations " + numIterations + "\n"
+                + "top words " + topWords + "\n"
+                + "alpha " + alpha + "\n"
+                + "beta " + beta + "\n";
     }
 }

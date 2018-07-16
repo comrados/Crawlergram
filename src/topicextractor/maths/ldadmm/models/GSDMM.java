@@ -172,7 +172,7 @@ public class GSDMM {
         if (debug) System.out.println("Running Gibbs sampling inference: ");
 
         for (int iter = 1; iter <= numIterations; iter++) {
-            if (debug && iter % 50 == 0) System.out.println("\tSampling iteration: " + (iter));
+            if (debug && iter % 100 == 0) System.out.println("\tSampling iteration: " + (iter));
             sampleInSingleIteration();
         }
 

@@ -11,6 +11,7 @@ after
 afterwards
 again
 against
+ah
 ain't
 all
 allow
@@ -262,6 +263,7 @@ like
 liked
 likely
 little
+lol
 look
 looking
 looks
@@ -556,6 +558,7 @@ would
 wouldn't
 x
 y
+yeah
 yes
 yet
 you

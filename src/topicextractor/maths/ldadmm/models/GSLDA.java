@@ -171,7 +171,7 @@ public class GSLDA {
         if (debug) System.out.println("Running Gibbs sampling inference: ");
 
         for (int iter = 1; iter <= numIterations; iter++) {
-            if (debug && iter % 50 == 0) System.out.println("\tSampling iteration: " + (iter));
+            if (debug && iter % 1000 == 0) System.out.println("\tSampling iteration: " + (iter));
             sampleInSingleIteration();
         }
 

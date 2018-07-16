@@ -21,9 +21,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.util.stream.Collectors.*;
-
-
 public class TopicExtractionMethods {
 
     final private static String PUNCT = "[\\p{Punct}–…‹›§«»¿¡!?≠\'´\"‘’“”⟨⟩°※©℗®℠™—]"; // punctuation
@@ -84,6 +81,10 @@ public class TopicExtractionMethods {
             removeEmptyMessages(msgs);
             getSimpleTokens(msgs);
             getTokenCompounds(msgs);
+
+            removeStopWords(msgs, "en");
+            removeStopWords(msgs, "ru");
+
             Map<String, String> uniqueWords = getUniqueWords(msgs);
             uniqueWords = GRAS.doStemming(uniqueWords, 5, 4, 0.8);
             getStemmedText(msgs, uniqueWords);
@@ -166,7 +167,7 @@ public class TopicExtractionMethods {
         return !token.isEmpty()
                 && !tokenIsLink(token)
                 && !tokenIsNumber(token.replaceAll(PUNCT, ""))
-                && !tokensLengthIsNotOk(token, 3, 30);
+                && !tokensLengthIsNotOk(token, 2, 30);
     }
 
     /**
@@ -265,6 +266,44 @@ public class TopicExtractionMethods {
                 msgs.remove(i);
             }
         }
+    }
+
+    /**
+     * removes stopwords from token compounds
+     * @param msgs messages
+     * @param language language code (i.e. en, es, de, ru etc.)
+     */
+    private static void removeStopWords(List<TEMessage> msgs, String language) {
+        Set<String> stopWords = loadStopWords(language);
+        for (int i = 0; i < msgs.size(); i++){
+            List<TEMessageToken> tokens = msgs.get(i).getTokens();
+            for (int j = 0; j < tokens.size(); j++){
+                List<String> compounds = tokens.get(j).getCompounds();
+                boolean removalFlag = false;
+                for (int k = 0; k < compounds.size(); k++){
+                    if (stopWords.contains(compounds.get(k))) {
+                        removalFlag = true;
+                        msgs.get(i).getTokens().get(j).getCompounds().remove(k);
+                        k--;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * loads stop words from a file to the set
+     * @param language language code (i.e. en, es, de, ru etc.)
+     */
+    private static Set<String> loadStopWords(String language){
+        Set<String> stopWords = new TreeSet<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("stopwords" + File.separator + language.toLowerCase() + ".txt"))) {
+            for (String doc; (doc = br.readLine()) != null;)
+                if (!doc.trim().isEmpty()) stopWords.add(doc.trim());
+        } catch (IOException e){
+            System.out.println("Can't read stopwords for " + language.toUpperCase() + " language");
+        }
+        return stopWords;
     }
 
 
