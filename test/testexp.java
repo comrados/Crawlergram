@@ -4,8 +4,8 @@
  * Creator: mikriuko
  */
 
-import topicextractor.maths.gaussnewton.GaussNewton;
-import topicextractor.maths.gaussnewton.NoSquareException;
+import com.crawlergram.topicextractor.gaussnewton.GaussNewton;
+import com.crawlergram.topicextractor.gaussnewton.NoSquareException;
 
 public class testexp {
 

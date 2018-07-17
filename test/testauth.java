@@ -4,13 +4,13 @@
  * Creator: Georgii Mikriukov
  */
 
-import storage.db.DBStorage;
-import storage.db.mongo.MongoDBStorage;
-import crawler.apicallback.ApiCallbackImplemented;
-import crawler.apimethods.AuthMethods;
-import crawler.apimethods.DialogsHistoryMethods;
-import crawler.logs.LogMethods;
-import crawler.output.ConsoleOutputMethods;
+import com.crawlergram.db.DBStorage;
+import com.crawlergram.db.mongo.MongoDBStorage;
+import com.crawlergram.crawler.apicallback.ApiCallbackImplemented;
+import com.crawlergram.crawler.apimethods.AuthMethods;
+import com.crawlergram.crawler.apimethods.DialogsHistoryMethods;
+import com.crawlergram.crawler.logs.LogMethods;
+import com.crawlergram.crawler.output.ConsoleOutputMethods;
 import org.telegram.api.chat.TLAbsChat;
 import org.telegram.api.dialog.TLDialog;
 import org.telegram.api.engine.ApiCallback;

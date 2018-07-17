@@ -4,11 +4,11 @@
  * Creator: Georgii Mikriukov
  */
 
-import crawler.apicallback.ApiCallbackImplemented;
-import crawler.apimethods.AuthMethods;
-import crawler.apimethods.DialogsHistoryMethods;
-import crawler.logs.ApiLoggerInterfaceImplemented;
-import crawler.logs.MTProtoLoggerInterfaceImplemented;
+import com.crawlergram.crawler.apicallback.ApiCallbackImplemented;
+import com.crawlergram.crawler.apimethods.AuthMethods;
+import com.crawlergram.crawler.apimethods.DialogsHistoryMethods;
+import com.crawlergram.crawler.logs.ApiLoggerInterfaceImplemented;
+import com.crawlergram.crawler.logs.MTProtoLoggerInterfaceImplemented;
 import org.telegram.api.chat.TLAbsChat;
 import org.telegram.api.dialog.TLDialog;
 import org.telegram.api.engine.ApiCallback;

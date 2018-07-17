@@ -5,7 +5,7 @@
  */
 
 
-import storage.db.mongo.MongoDBStorage;
+import com.crawlergram.db.mongo.MongoDBStorage;
 import org.bson.Document;
 
 import java.util.*;
