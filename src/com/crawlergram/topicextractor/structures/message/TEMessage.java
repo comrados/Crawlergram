@@ -17,7 +17,7 @@ public class TEMessage {
     private String text;
     private String stemmedText;
     private Integer date;
-    private List<TEMessageToken> tokens;
+    private List<String> tokens;
 
     public TEMessage(){
         this.id = 0;
@@ -67,11 +67,11 @@ public class TEMessage {
         this.date = date;
     }
 
-    public List<TEMessageToken> getTokens() {
+    public List<String> getTokens() {
         return tokens;
     }
 
-    public void setTokens(List<TEMessageToken> tokens) {
+    public void setTokens(List<String> tokens) {
         this.tokens = tokens;
     }
 
