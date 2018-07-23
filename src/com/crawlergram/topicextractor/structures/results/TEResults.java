@@ -2,6 +2,7 @@
  * Title: TEResults.java
  * Project: telegramJ
  * Creator: Georgii Mikriukov
+ * 2018
  */
 
 package com.crawlergram.topicextractor.structures.results;

@@ -1,6 +1,6 @@
 <component name="CopyrightManager">
   <copyright>
     <option name="myName" value="George HSMW" />
-    <option name="notice" value="Title: &amp;#36;file.fileName&#10;Project: &amp;#36;project.name&#10;Creator: Georgii Mikriukov" />
+    <option name="notice" value="Title: &amp;#36;file.fileName&#10;Project: &amp;#36;project.name&#10;Creator: Georgii Mikriukov&#10;&amp;#36;today.year" />
   </copyright>
 </component>

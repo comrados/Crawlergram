@@ -2,6 +2,7 @@
  * Title: Tokenizer.java
  * Project: telegramJ
  * Creator: Georgii Mikriukov
+ * 2018
  */
 
 package com.crawlergram.topicextractor.extractormethods;
@@ -23,9 +24,13 @@ public class Tokenizer {
     final private static String METERS = "^[0-9]+([skmcdnкмдн])?([mм])(eter)?(s)?$"; // meters
     final private static String TIME = "^[0-9]+(ap)m$"; // time
     final private static String NUMBERS_SUP = "^[0-9]+(([kmкм])+|(ish|th|nd|st|rd|g|x|ый|ой|ий))?[0-9]*$"; // numbers
-    final private static String HEX = "^([0]+x)[0-9a-f]+$"; // hexadecimal 0xCAFE1 (doesn't remove abbreviations as ABBA)
+    final private static String HEX = "^([0]+x)[0-9a-f]+$"; // hexadecimal 0xCAFE1 (doesn't match words like ABBA or CAFE)
     final private static String CHAR_FILTER = "[^\u0000-\u1FFF]"; // filters all the characters that fall out this list
 
+    /**
+     * Tokenizes list of messages
+     * @param msgs messages
+     */
     public static List<TEMessage> tokenizeMessages(List<TEMessage> msgs){
         List<TEMessage> tokenized = new ArrayList<>();
         for (TEMessage msg: msgs){
@@ -34,6 +39,10 @@ public class Tokenizer {
         return tokenized;
     }
 
+    /**
+     * Tokenizes single message
+     * @param msg message
+     */
     private static TEMessage tokenizeMessage(TEMessage msg){
         List<String> tokens = getSimpleTokens(msg.getText());
         tokens = getTokenCompounds(tokens);
@@ -122,6 +131,10 @@ public class Tokenizer {
         return !((token.length() <= max) && (token.length() >= min));
     }
 
+    /**
+     * Replaces given patterns from token
+     * @param token token
+     */
     private static String compoundTokenEdit(String token){
         String temp = token.toLowerCase();
         temp = temp.replaceAll(CHAR_FILTER, ""); //removes redundant characters, emoticons and so on
