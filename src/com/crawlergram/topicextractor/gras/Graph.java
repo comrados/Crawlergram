@@ -20,7 +20,8 @@ public class Graph {
 
         /**
          * Adds an adjacency to the node with the specified weight
-         * @param node node
+         *
+         * @param node   node
          * @param weight weight
          */
         void addAdjacency(int node, int weight) {
@@ -41,6 +42,7 @@ public class Graph {
 
         /**
          * removes the adjacency to a specific node
+         *
          * @param node node
          */
         void removeAdjacency(int node) {
@@ -86,8 +88,9 @@ public class Graph {
 
     /**
      * adds a weighted edge to the graph
-     * @param n1 node 1
-     * @param n2 node 2
+     *
+     * @param n1     node 1
+     * @param n2     node 2
      * @param weight weight
      */
     public void addEdge(int n1, int n2, int weight) {
@@ -108,9 +111,10 @@ public class Graph {
 
     /**
      * gets the starting index of a degree in the sorted nodes list
+     *
      * @param degree degree
-     * @param from starting point
-     * @param to ending point
+     * @param from   starting point
+     * @param to     ending point
      */
     private int searchDegreePosition(int degree, int from, int to) {
         if (sortedNodes.size() == 0)
@@ -135,6 +139,7 @@ public class Graph {
 
     /**
      * searches the position of a node in the sorted nodes list
+     *
      * @param n node
      */
     private int searchNodePosition(int n) {
@@ -151,6 +156,7 @@ public class Graph {
 
     /**
      * removes adjacency to n2 from node n1
+     *
      * @param n1 node 1
      * @param n2 node 2
      */
@@ -181,6 +187,7 @@ public class Graph {
 
     /**
      * removes the node n from the graph
+     *
      * @param n node
      */
     public void removeNode(int n) {
@@ -204,6 +211,7 @@ public class Graph {
 
     /**
      * removes the edge between two nodes
+     *
      * @param n1 node 1
      * @param n2 node 2
      */
@@ -214,6 +222,7 @@ public class Graph {
 
     /**
      * return the nodes in n's adjacencies list
+     *
      * @param n node
      */
     public int[] getAdjacentList(int n) {

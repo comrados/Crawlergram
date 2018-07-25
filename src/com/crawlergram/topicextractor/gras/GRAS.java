@@ -14,17 +14,18 @@ import java.util.*;
 
 public class GRAS {
 
-    private static boolean debug=false;
+    private static boolean debug = false;
 
     /**
      * Executing method. Returns words and resulting stems
+     *
      * @param sortedWordSet sorted set of unique sortedWordSet for stemming
-     * @param l l parameter (shortest possible common prefix) (~ 5-8)
-     * @param alpha suffix frequency cutoff (~ 4)
-     * @param delta graph edge cutoff threshold (~ 0.5-1.0)
+     * @param l             l parameter (shortest possible common prefix) (~ 5-8)
+     * @param alpha         suffix frequency cutoff (~ 4)
+     * @param delta         graph edge cutoff threshold (~ 0.5-1.0)
      */
-    public static Map<String, String> doStemming(Map<String, String> sortedWordSet, int l, int alpha, double delta){
-        if ((sortedWordSet != null) && !sortedWordSet.isEmpty()){
+    public static Map<String, String> doStemming(Map<String, String> sortedWordSet, int l, int alpha, double delta) {
+        if ((sortedWordSet != null) && !sortedWordSet.isEmpty()) {
             String[] words = sortedWordSet.keySet().toArray(new String[0]);
             String[] stems = GRAS.stemming(words, l, alpha, delta);
             return combineOutput(words, stems);
@@ -35,14 +36,15 @@ public class GRAS {
 
     /**
      * combines words and stems into sorted map
+     *
      * @param words words
      * @param stems stems
      */
-    private static Map<String, String> combineOutput(String[] words, String[] stems){
+    private static Map<String, String> combineOutput(String[] words, String[] stems) {
         Map<String, String> out = new TreeMap<>();
-        if (words.length == stems.length){
-            for (int i = 0; i < words.length; i++){
-                if ((stems[i] == null) || (stems[i].isEmpty())){
+        if (words.length == stems.length) {
+            for (int i = 0; i < words.length; i++) {
+                if ((stems[i] == null) || (stems[i].isEmpty())) {
                     out.put(words[i], words[i]);
                 } else {
                     out.put(words[i], stems[i]);
@@ -54,8 +56,9 @@ public class GRAS {
 
     /**
      * Performs statistical stemming based on GRAS algorithm
+     *
      * @param words words array
-     * @param l l parameter (shortest possible common prefix)
+     * @param l     l parameter (shortest possible common prefix)
      * @param alpha suffix frequency cutoff
      * @param delta graph edge cutoff threshold
      */
@@ -84,8 +87,9 @@ public class GRAS {
 
     /**
      * Returns a list of first and last positions of each class with at least two words
+     *
      * @param words words array
-     * @param l l parameter (shortest possible common prefix)
+     * @param l     l parameter (shortest possible common prefix)
      */
     private static List<Integer> getPartitions(String[] words, int l) {
         List<Integer> classes = new ArrayList<>();
@@ -116,10 +120,11 @@ public class GRAS {
 
     /**
      * Computes the suffix pairs and their frequencies
-     * @param words words array
+     *
+     * @param words   words array
      * @param classes classes list
-     * @param l l parameter (shortest possible common prefix)
-     * @param alpha suffix frequency cutoff
+     * @param l       l parameter (shortest possible common prefix)
+     * @param alpha   suffix frequency cutoff
      */
     private static HashMap<String, Integer> getFrequentSuffixPairs(String[] words, List<Integer> classes, int l, int alpha) {
         HashMap<String, Integer> alphaFrequent = new HashMap<>();
@@ -160,9 +165,10 @@ public class GRAS {
 
     /**
      * Returns the suffix pair <s1,s2> of the words <w1,w2> with the same prefix l
+     *
      * @param w1 word 1
      * @param w2 word 2
-     * @param l l parameter (shortest possible common prefix)
+     * @param l  l parameter (shortest possible common prefix)
      */
     private static String getSuffixPair(String w1, String w2, int l) {
         // calculate the LCP of the two words
@@ -188,9 +194,10 @@ public class GRAS {
 
     /**
      * Returns the longest common prefix (LCP) of two words that have a common prefix l
+     *
      * @param w1 word 1
      * @param w2 word 2
-     * @param l l parameter (shortest possible common prefix)
+     * @param l  l parameter (shortest possible common prefix)
      */
     private static int longestCommonPrefix(String w1, String w2, int l) {
         int i = l;
@@ -201,13 +208,15 @@ public class GRAS {
                 break;
         return i;
     }
+
     /**
      * Identifies the real class of word (class of stem)
-     * @param words words array
-     * @param classes classes list
+     *
+     * @param words               words array
+     * @param classes             classes list
      * @param frequentSuffixPairs frequent suffix pairs
-     * @param l l parameter (shortest possible common prefix)
-     * @param delta graph edge cutoff threshold
+     * @param l                   l parameter (shortest possible common prefix)
+     * @param delta               graph edge cutoff threshold
      */
     private static String[] identifyClass(String[] words, List<Integer> classes, Map<String, Integer> frequentSuffixPairs, int l, double delta) {
         String[] stems = new String[words.length];
@@ -254,13 +263,15 @@ public class GRAS {
         }
         return stems;
     }
+
     /**
      * returns a Graph G=(V,E): V=words in the class, E={(u,v): w(u,v)>=alpha}, where w(u,v) is the frequency of the suffix pair <s1,s2> of <u,v>
-     * @param first class lower limit
-     * @param last class upper limit
-     * @param words words array
+     *
+     * @param first               class lower limit
+     * @param last                class upper limit
+     * @param words               words array
      * @param frequentSuffixPairs frequent suffix pairs
-     * @param l l parameter (shortest possible common prefix)
+     * @param l                   l parameter (shortest possible common prefix)
      */
     private static Graph buildGraph(int first, int last, String[] words, Map<String, Integer> frequentSuffixPairs, int l) {
 
@@ -284,6 +295,7 @@ public class GRAS {
 
     /**
      * Computes the cohesion between two nodes (p,v), given their adjacency lists
+     *
      * @param adjP adjacency list of node p
      * @param adjV adjacency list of node v
      */
@@ -311,10 +323,11 @@ public class GRAS {
 
     /**
      * Returns word stem for the class S
-     * @param S class
+     *
+     * @param S     class
      * @param words words array
      * @param first class lower limit
-     * @param l l parameter (shortest possible common prefix)
+     * @param l     l parameter (shortest possible common prefix)
      */
     private static String getStem(List<Integer> S, String[] words, int first, int l) {
         // assume the first word of the class like a candidate stem

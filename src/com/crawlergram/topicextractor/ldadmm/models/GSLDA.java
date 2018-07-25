@@ -66,15 +66,16 @@ public class GSLDA {
 
     /**
      * LDA with random topic initialization. Data is read from list of TEMessage instances.
-     * @param msgs messages (with stemmed text)
-     * @param inNumTopics number of topics
-     * @param inAlpha alpha parameter, for short text - 0.1, for long text - 0.01
-     * @param inBeta beta parameter, 0.1 both for short and long texts
+     *
+     * @param msgs            messages (with stemmed text)
+     * @param inNumTopics     number of topics
+     * @param inAlpha         alpha parameter, for short text - 0.1, for long text - 0.01
+     * @param inBeta          beta parameter, 0.1 both for short and long texts
      * @param inNumIterations number of iterations
-     * @param inTopWords top topic words for output
+     * @param inTopWords      top topic words for output
      */
     public GSLDA(List<TEMessage> msgs, int inNumTopics,
-                 double inAlpha, double inBeta, int inNumIterations, int inTopWords){
+                 double inAlpha, double inBeta, int inNumIterations, int inTopWords) {
 
         alpha = inAlpha;
         beta = inBeta;
@@ -144,7 +145,7 @@ public class GSLDA {
     /**
      * Randomly initialize topic assignments
      */
-    private void initialize(){
+    private void initialize() {
         if (debug) System.out.println("Randomly initializing topic assignments ...");
         topicAssignments = new ArrayList<>();
         for (int i = 0; i < numDocuments; i++) {
@@ -166,7 +167,7 @@ public class GSLDA {
     /**
      * Inference topic models
      */
-    public TEResults inference(){
+    public TEResults inference() {
         if (debug) System.out.println("Running Gibbs sampling inference: ");
 
         for (int iter = 1; iter <= numIterations; iter++) {
@@ -174,7 +175,7 @@ public class GSLDA {
             sampleInSingleIteration();
         }
 
-        if (debug)  System.out.println("Writing output from the last sample ...");
+        if (debug) System.out.println("Writing output from the last sample ...");
 
         return write();
     }
@@ -217,19 +218,19 @@ public class GSLDA {
         }
     }
 
-    private TEResultsParameters writeParameters(){
-            return new TEResultsParameters("LDA", numTopics, alpha, beta, numIterations, topWords);
+    private TEResultsParameters writeParameters() {
+        return new TEResultsParameters("LDA", numTopics, alpha, beta, numIterations, topWords);
     }
 
-    private Map<Integer, String> writeDictionary(){
+    private Map<Integer, String> writeDictionary() {
         return id2WordVocabulary;
     }
 
-    private List<List<Integer>> writeIDbasedCorpus(){
+    private List<List<Integer>> writeIDbasedCorpus() {
         return corpus;
     }
 
-    private List<List<Integer>> writeTopicAssignments(){
+    private List<List<Integer>> writeTopicAssignments() {
         List<List<Integer>> ta = new ArrayList<>();
         for (int dIndex = 0; dIndex < numDocuments; dIndex++) {
             List<Integer> t = new ArrayList<>();
@@ -242,7 +243,7 @@ public class GSLDA {
         return ta;
     }
 
-    private List<Map<String, Double>> writeTopTopicalWords(){
+    private List<Map<String, Double>> writeTopTopicalWords() {
 
         List<Map<String, Double>> topWordsList = new ArrayList<>();
 
@@ -274,7 +275,7 @@ public class GSLDA {
         return topWordsList;
     }
 
-    private List<List<Double>> writeTopicWordPros(){
+    private List<List<Double>> writeTopicWordPros() {
         List<List<Double>> twp = new ArrayList<>();
         for (int i = 0; i < numTopics; i++) {
             List<Double> wp = new ArrayList<>();
@@ -288,7 +289,7 @@ public class GSLDA {
         return twp;
     }
 
-    private List<List<Integer>> writeTopicWordCount(){
+    private List<List<Integer>> writeTopicWordCount() {
         List<List<Integer>> twc = new ArrayList<>();
         for (int i = 0; i < numTopics; i++) {
             List<Integer> wc = new ArrayList<>();
@@ -300,7 +301,7 @@ public class GSLDA {
         return twc;
     }
 
-    private List<List<Double>> writeDocTopicPros(){
+    private List<List<Double>> writeDocTopicPros() {
         List<List<Double>> dtp = new ArrayList<>();
         for (int i = 0; i < numDocuments; i++) {
             List<Double> tp = new ArrayList<>();
@@ -314,7 +315,7 @@ public class GSLDA {
         return dtp;
     }
 
-    private List<List<Integer>> writeDocTopicCount(){
+    private List<List<Integer>> writeDocTopicCount() {
         List<List<Integer>> dtc = new ArrayList<>();
         for (int i = 0; i < numDocuments; i++) {
             List<Integer> tc = new ArrayList<>();
@@ -326,7 +327,7 @@ public class GSLDA {
         return dtc;
     }
 
-    private TEResults write(){
+    private TEResults write() {
         return new TEResults(writeParameters(), writeTopicAssignments(), writeTopTopicalWords(),
                 writeTopicWordPros(), writeTopicWordCount(), writeDocTopicPros(), writeDocTopicCount());
     }

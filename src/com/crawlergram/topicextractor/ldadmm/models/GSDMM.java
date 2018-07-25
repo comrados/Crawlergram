@@ -62,15 +62,16 @@ public class GSDMM {
 
     /**
      * DMM with random topic initialization. Data is read from list of TEMessage instances.
-     * @param msgs messages (with stemmed text)
-     * @param inNumTopics number of topics
-     * @param inAlpha alpha parameter, for short text - 0.1, for long text - 0.01
-     * @param inBeta beta parameter, 0.1 both for short and long texts
+     *
+     * @param msgs            messages (with stemmed text)
+     * @param inNumTopics     number of topics
+     * @param inAlpha         alpha parameter, for short text - 0.1, for long text - 0.01
+     * @param inBeta          beta parameter, 0.1 both for short and long texts
      * @param inNumIterations number of iterations
-     * @param inTopWords top topic words for output
+     * @param inTopWords      top topic words for output
      */
     public GSDMM(List<TEMessage> msgs, int inNumTopics,
-                 double inAlpha, double inBeta, int inNumIterations, int inTopWords){
+                 double inAlpha, double inBeta, int inNumIterations, int inTopWords) {
         alpha = inAlpha;
         beta = inBeta;
         numTopics = inNumTopics;
@@ -150,7 +151,7 @@ public class GSDMM {
     /**
      * Randomly initialize topic assignments
      */
-    private void initialize(){
+    private void initialize() {
         if (debug) System.out.println("Randomly initializing topic assignments ...");
         topicAssignments = new ArrayList<>();
         for (int i = 0; i < numDocuments; i++) {
@@ -168,7 +169,7 @@ public class GSDMM {
     /**
      * Inference topic models
      */
-    public TEResults inference(){
+    public TEResults inference() {
         if (debug) System.out.println("Running Gibbs sampling inference: ");
 
         for (int iter = 1; iter <= numIterations; iter++) {
@@ -219,11 +220,11 @@ public class GSDMM {
         }
     }
 
-    private TEResultsParameters writeParameters(){
+    private TEResultsParameters writeParameters() {
         return new TEResultsParameters("DMM", numTopics, alpha, beta, numIterations, topWords);
     }
 
-    private List<List<Integer>> writeTopicAssignments(){
+    private List<List<Integer>> writeTopicAssignments() {
         List<List<Integer>> ta = new ArrayList<>();
         for (int dIndex = 0; dIndex < numDocuments; dIndex++) {
             List<Integer> t = new ArrayList<>();
@@ -237,7 +238,7 @@ public class GSDMM {
         return ta;
     }
 
-    private List<Map<String, Double>> writeTopTopicalWords(){
+    private List<Map<String, Double>> writeTopTopicalWords() {
 
         List<Map<String, Double>> topWordsList = new ArrayList<>();
 
@@ -269,7 +270,7 @@ public class GSDMM {
         return topWordsList;
     }
 
-    private List<List<Double>> writeTopicWordPros(){
+    private List<List<Double>> writeTopicWordPros() {
         List<List<Double>> twp = new ArrayList<>();
         for (int i = 0; i < numTopics; i++) {
             List<Double> wp = new ArrayList<>();
@@ -283,7 +284,7 @@ public class GSDMM {
         return twp;
     }
 
-    private List<List<Integer>> writeTopicWordCount(){
+    private List<List<Integer>> writeTopicWordCount() {
         List<List<Integer>> twc = new ArrayList<>();
         for (int i = 0; i < numTopics; i++) {
             List<Integer> wc = new ArrayList<>();
@@ -295,7 +296,7 @@ public class GSDMM {
         return twc;
     }
 
-    private List<List<Double>> writeDocTopicPros(){
+    private List<List<Double>> writeDocTopicPros() {
         List<List<Double>> dtp = new ArrayList<>();
         for (int i = 0; i < numDocuments; i++) {
             List<Double> tp = new ArrayList<>();
@@ -318,7 +319,7 @@ public class GSDMM {
         return dtp;
     }
 
-    private List<List<Integer>> writeDocTopicCount(){
+    private List<List<Integer>> writeDocTopicCount() {
         List<List<Integer>> dtc = new ArrayList<>();
         for (int i = 0; i < docTopicCount.length; i++) {
             List<Integer> tc = new ArrayList<>();
@@ -328,7 +329,7 @@ public class GSDMM {
         return dtc;
     }
 
-    private TEResults write(){
+    private TEResults write() {
         return new TEResults(writeParameters(), writeTopicAssignments(), writeTopTopicalWords(),
                 writeTopicWordPros(), writeTopicWordCount(), writeDocTopicPros(), writeDocTopicCount());
     }

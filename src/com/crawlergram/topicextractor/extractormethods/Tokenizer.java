@@ -28,12 +28,47 @@ public class Tokenizer {
     final private static String CHAR_FILTER = "[^\u0000-\u1FFF]"; // filters all the characters that fall out this list
 
     /**
+     * Tokenizes text to list of strings
+     *
+     * @param text original text
+     */
+    public static List<String> tokenizeToList(String text) {
+        List<String> tokens = getSimpleTokens(text);
+        return getTokenCompounds(tokens);
+    }
+
+    /**
+     * Preprocesses text. Returns clear text without punctuation, numbers and additional charachters.
+     *
+     * @param text original text
+     */
+    public static String preprocess(String text) {
+        List<String> pureTokens = tokenizeToList(text);
+        StringBuilder output = new StringBuilder();
+        for (String token : pureTokens)
+            output.append(token).append(" ");
+        return output.toString().trim();
+    }
+
+    /**
+     * Tokenizes text to array of strings
+     *
+     * @param text original text
+     */
+    public static String[] tokenizeToArray(String text) {
+        List<String> tokens = tokenizeToList(text);
+        String[] arr = new String[tokens.size()];
+        return tokens.toArray(arr);
+    }
+
+    /**
      * Tokenizes list of messages
+     *
      * @param msgs messages
      */
-    public static List<TEMessage> tokenizeMessages(List<TEMessage> msgs){
+    public static List<TEMessage> tokenizeMessages(List<TEMessage> msgs) {
         List<TEMessage> tokenized = new ArrayList<>();
-        for (TEMessage msg: msgs){
+        for (TEMessage msg : msgs) {
             tokenized.add(tokenizeMessage(msg));
         }
         return tokenized;
@@ -41,9 +76,10 @@ public class Tokenizer {
 
     /**
      * Tokenizes single message
+     *
      * @param msg message
      */
-    private static TEMessage tokenizeMessage(TEMessage msg){
+    private static TEMessage tokenizeMessage(TEMessage msg) {
         List<String> tokens = getSimpleTokens(msg.getText());
         tokens = getTokenCompounds(tokens);
         msg.setTokens(tokens);
@@ -53,6 +89,7 @@ public class Tokenizer {
     /**
      * Tokenization method for strings. Returns tokens with punctuation (except of web links and numbers).
      * Simple tokens can contain compounds (e.g. web-development: web, development).
+     *
      * @param text original message text
      */
     private static List<String> getSimpleTokens(String text) {
@@ -60,7 +97,7 @@ public class Tokenizer {
         List<String> tokens = new LinkedList<>();
         for (String token : tokensA) {
             if (tokenCheck(token)) {
-                tokens.add(token);
+                tokens.add(token.replaceAll("['‘’]", ""));
             }
         }
         return tokens;
@@ -68,15 +105,16 @@ public class Tokenizer {
 
     /**
      * Tokenization method for strings. Returns compounds of simple tokens (e.g. web-development: web, development).
+     *
      * @param tokens simple tokens
      */
     private static List<String> getTokenCompounds(List<String> tokens) {
         List<String> tokensL = new LinkedList<>();
-        for (String token: tokens){
+        for (String token : tokens) {
             String[] tokensA = token.split(PUNCT);
             for (String tokenA : tokensA) {
                 tokenA = compoundTokenEdit(tokenA);
-                if(tokenCheck(tokenA)){
+                if (tokenCheck(tokenA)) {
                     tokensL.add(tokenA);
                 }
             }
@@ -86,6 +124,7 @@ public class Tokenizer {
 
     /**
      * various checks: emptiness, number check, link check, etc.
+     *
      * @param token original token
      */
     private static boolean tokenCheck(String token) {
@@ -97,6 +136,7 @@ public class Tokenizer {
 
     /**
      * checks if token is web link
+     *
      * @param token original token
      */
     private static boolean tokenIsLink(String token) {
@@ -123,9 +163,10 @@ public class Tokenizer {
 
     /**
      * checks if token is longer than min and shorter than max
+     *
      * @param token original token
-     * @param min     minimal length of token (inclusive)
-     * @param max     maximal length of token (inclusive)
+     * @param min   minimal length of token (inclusive)
+     * @param max   maximal length of token (inclusive)
      */
     private static boolean tokensLengthIsNotOk(String token, int min, int max) {
         return !((token.length() <= max) && (token.length() >= min));
@@ -133,9 +174,10 @@ public class Tokenizer {
 
     /**
      * Replaces given patterns from token
+     *
      * @param token token
      */
-    private static String compoundTokenEdit(String token){
+    private static String compoundTokenEdit(String token) {
         String temp = token.toLowerCase();
         temp = temp.replaceAll(CHAR_FILTER, ""); //removes redundant characters, emoticons and so on
         temp = temp.replaceAll(CHAR_REPEATS_BEG, "$2"); // removes multiple char repeats a the beginning

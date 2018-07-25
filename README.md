@@ -4,29 +4,17 @@ Java crawler for Telegram based on [TelegramApi](https://github.com/rubenlagus/T
 
 ## Dependencies
 
-1. Java 1.8 or later.
+1. Java 1.8+.
 
-2. [TelegramApi](https://github.com/rubenlagus/TelegramApi) library.
+2. [TelegramApi (modified 66+)](https://github.com/rubenlagus/TelegramApi) library.
 
-Maven:
-  ```xml
-  <dependency>
-    <groupId>org.telegram</groupId>
-    <artifactId>telegramapi</artifactId>
-    <version>66.2</version>
-  </dependency>
-  ```
+3. [MongoDB Java Driver 3+](https://github.com/mongodb/mongo-java-driver) library.
 
-3. [MongoDB Java Driver](https://github.com/mongodb/mongo-java-driver) library.
+4. [Apache Commons Lang 3+](https://github.com/apache/commons-lang) library.
 
-Maven:
-  ```xml
-  <dependency>
-    <groupId>org.mongodb</groupId>
-    <artifactId>mongodb-driver</artifactId>
-    <version>3.6.3</version>
-  </dependency>
-  ```
+5. [Jackson JSON 2+](https://github.com/FasterXML/jackson) library.
+
+The JARs can be found in /lib.
 
 ## Acknowledgments
 
@@ -34,7 +22,8 @@ Maven:
   * To [Lonami](https://github.com/Lonami) for [Telethon](https://github.com/LonamiWebs/Telethon) library and documentation, which was used for clarifications in some tricky cases.
   * To [Ata Amini](https://www.codeproject.com/Members/Ata-Amini) for the implementation of [Gauss-Newton Algorithm](https://www.codeproject.com/Articles/1175992/Implementation-of-Gauss-Newton-Algorithm-in-Java).
   * To Giulio Busato and [Gianmaria Silvello](https://github.com/giansilv) for [GRAS-stemmer](https://github.com/giansilv/statisticalStemmers/tree/master/GRAS-master).
-  * To [Dat Quoc Nguyen] (https://github.com/datquocnguyen) for [jLDADMM](https://github.com/datquocnguyen/jLDADMM).
+  * To [Dat Quoc Nguyen](https://github.com/datquocnguyen) for [jLDADMM](https://github.com/datquocnguyen/jLDADMM).
+  * To [Erik Tromp](https://github.com/ErikTromp/) for [LIGA](https://github.com/ErikTromp/LIGA) algorithm.
 
 ## License
 

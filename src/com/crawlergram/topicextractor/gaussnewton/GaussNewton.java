@@ -14,8 +14,9 @@ public abstract class GaussNewton {
 
     /**
      * Initialises the parameters and trigger the main optimisation function.
-     * @param x The independent observed values
-     * @param y The dependent values observed
+     *
+     * @param x                  The independent observed values
+     * @param y                  The dependent values observed
      * @param numberOfParameters The number of unknown parameters in y function
      * @return optimised values of parameters in y function
      */
@@ -35,12 +36,12 @@ public abstract class GaussNewton {
      * 4. Calculates (JT * J)^-1 * JT with JT as transpose of J
      * 5. Multiplies the matrix in step 4 to resisule matrix in step 2: (JT * J)^-1 * JT * res
      * 6. The results of step 5 is a new row matrix that is used to calculate new values for b matrix;
-     *     new_b = old_b -  (JT * J)^-1 * JT * res
+     * new_b = old_b -  (JT * J)^-1 * JT * res
      * 7. However, depending on the initial values for b matrix, there is a chance that the optimisation will never, converge. This
      * happens when the initial b matrix is far from the optimum values. To remedy this, we multiply the second term in the above equation
      * by a small fraction. The downside of applying this fraction is that the number of iterations required for this optimisation will
      * increase:
-     *     new_b = old_b -  gamma * (JT * J)^-1 * JT * res
+     * new_b = old_b -  gamma * (JT * J)^-1 * JT * res
      * We have chosen a value of 0.01 for gamma which seems to be working with any initial values for b.
      * 8. Continue the above steps in other iterations in order to reach the required precision.
      *
@@ -73,6 +74,7 @@ public abstract class GaussNewton {
 
     /**
      * Root mean square (RMS) error of residuals matrix.
+     *
      * @param res The input matrix that contains the error in predictions
      * @return The root mean square of error values in res matrix
      */
@@ -87,6 +89,7 @@ public abstract class GaussNewton {
     /**
      * It is the difference between predicted values and the actual values;
      * This is set for minimisation. For optimisation res[i] = actual[i] - predicted[i]
+     *
      * @param x The independent variable matrix
      * @param y The dependent values
      * @param b The parameter matrix
@@ -105,7 +108,7 @@ public abstract class GaussNewton {
     /**
      * Given J (i.e. Jacobian matrix) as input,
      * this method calculates:
-     *   (JT * J)^-1 * JT * r
+     * (JT * J)^-1 * JT * r
      * It means:
      * first find transpose of matrix J to get JT
      * then multiply JT to J: JT * J
@@ -114,7 +117,7 @@ public abstract class GaussNewton {
      * then multiply the above matrix by r matrix: (JT * J)^-1 * JT * r
      *
      * @param JArray The Jacobian matrix as input
-     * @param res The residulas matrix
+     * @param res    The residulas matrix
      * @return (JT * J)^-1 * JT
      */
     private double[][] transjacob(double[][] JArray, double[][] res) throws NoSquareException {
@@ -132,7 +135,7 @@ public abstract class GaussNewton {
      * Calculate the Jacobian matrix.
      * It is assumed that matrix x[i][j] has only one column; i.e.only one independent variable. x[i][0] is the ith observaion.
      * b[] is a 1-dimensional array that holds the unknown parameters in function y.
-     *
+     * <p>
      * Jacobian matrix is a matrix with number of unknown variables given in array b as the number of columns and the number of rows given in
      * 2-dimensional array x as the number of rows.
      * J(i,j) is the Jacobian of row i and variable with index j; i.e. b[j].
@@ -140,8 +143,8 @@ public abstract class GaussNewton {
      * find the value of partial derivative of y with respect to b[j]:
      * J(i,j) = dy/d(b[j]) with given values x[i][0] and b[j]
      *
-     * @param b The array of unknown parameters in y function
-     * @param x The value of independent variable observed
+     * @param b                    The array of unknown parameters in y function
+     * @param x                    The value of independent variable observed
      * @param numberOfObservations the length of x matrix (the number of rows)
      * @return Jacobian matrix
      */
@@ -167,12 +170,11 @@ public abstract class GaussNewton {
      * It does the same with a1 - alpha or a1 - 1e-6 and calculate y as y2
      * dy/d(a1) = (y1 - y2)/(2 * alpha)
      * This result is an approximate value.
-     * @param x the point on the y vs x curve
-     * @param b the array of unknown variables
+     *
+     * @param x      the point on the y vs x curve
+     * @param b      the array of unknown variables
      * @param bIndex the index of variable for derivation
-     *
      * @return dy/d(b[bIndex])
-     *
      */
     private double derivative(double x, double[] b, int bIndex) {
         double[] bCopy = b.clone();
@@ -194,7 +196,6 @@ public abstract class GaussNewton {
      * @param x The given point of independent variable
      * @param b The array with a given set of values for unknown variables in y function
      * @return The value of dependent variable y with given x and b[]
-     *
      */
     public abstract double findY(double x, double[] b);
 

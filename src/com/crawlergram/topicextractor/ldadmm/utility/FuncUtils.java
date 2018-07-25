@@ -7,16 +7,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class FuncUtils
-{
-    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValueDescending(Map<K, V> map)
-    {
+public class FuncUtils {
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValueDescending(Map<K, V> map) {
         List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>(map.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<K, V>>()
-        {
+        Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
             @Override
-            public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2)
-            {
+            public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
                 int compare = (o1.getValue()).compareTo(o2.getValue());
                 return -compare;
             }
@@ -29,14 +25,11 @@ public class FuncUtils
         return result;
     }
 
-    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValueAscending(Map<K, V> map)
-    {
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValueAscending(Map<K, V> map) {
         List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>(map.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<K, V>>()
-        {
+        Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
             @Override
-            public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2)
-            {
+            public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
                 int compare = (o1.getValue()).compareTo(o2.getValue());
                 return compare;
             }
@@ -51,12 +44,11 @@ public class FuncUtils
 
     /**
      * Sample a value from a double array
-     * 
+     *
      * @param probs
      * @return
      */
-    public static int nextDiscrete(double[] probs)
-    {
+    public static int nextDiscrete(double[] probs) {
         double sum = 0.0;
         for (int i = 0; i < probs.length; i++)
             sum += probs[i];
@@ -72,16 +64,14 @@ public class FuncUtils
         return probs.length - 1;
     }
 
-    public static double mean(double[] m)
-    {
+    public static double mean(double[] m) {
         double sum = 0;
         for (int i = 0; i < m.length; i++)
             sum += m[i];
         return sum / m.length;
     }
 
-    public static double stddev(double[] m)
-    {
+    public static double stddev(double[] m) {
         double mean = mean(m);
         double s = 0;
         for (int i = 0; i < m.length; i++)

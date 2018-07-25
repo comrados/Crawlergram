@@ -6,11 +6,14 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/libfixes" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/res" type="java-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="org.mongodb:mongo-java-driver:3.6.3" level="project" />
     <orderEntry type="library" name="java" level="project" />
     <orderEntry type="library" name="telegramapi-66.2-sources" level="project" />
+    <orderEntry type="library" name="mongo-java-driver-3.6.3-javadoc" level="project" />
+    <orderEntry type="library" name="commons-lang3-3.7" level="project" />
+    <orderEntry type="library" name="jackson-core-2.9.6" level="project" />
   </component>
 </module>

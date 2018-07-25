@@ -22,7 +22,7 @@ public class TEResults {
 
     public TEResults(TEResultsParameters parameters, List<List<Integer>> topicAssignments,
                      List<Map<String, Double>> topTopicalWords, List<List<Double>> topicWordPros,
-                     List<List<Integer>> topicWordCount,  List<List<Double>> docTopicPros,
+                     List<List<Integer>> topicWordCount, List<List<Double>> docTopicPros,
                      List<List<Integer>> docTopicCount) {
         this.parameters = parameters;
         this.topicAssignments = topicAssignments;
