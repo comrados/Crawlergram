@@ -31,15 +31,16 @@ public class TopicExtractionMethods {
      * @param docThreshold if chat has very low number of messages (< docThreshold) -> all chat is merged
      * @param msgMerging   if true - artificial documents will be created from messages, preferable for LDA
      * @param liga         language identification model
+     * @param stopwords    stopwords map to prevent multiple file readings
      */
     public static void getTopicsForAllDialogs(DBStorage dbStorage, int dateFrom, int dateTo, int docThreshold,
-                                              boolean msgMerging, LIGA liga) {
+                                              boolean msgMerging, LIGA liga, Map<String, Set<String>> stopwords) {
         // get all dialogs
         List<TEDialog> dialogs = dbStorage.getDialogs();
         if ((dialogs != null) && (!dialogs.isEmpty())) {
             for (TEDialog dialog : dialogs) {
                 // do for one
-                getTopicsForOneDialog(dbStorage, dialog, dateFrom, dateTo, docThreshold, msgMerging, liga);
+                getTopicsForOneDialog(dbStorage, dialog, dateFrom, dateTo, docThreshold, msgMerging, liga, stopwords);
             }
         } else {
             System.out.println("NO DIALOGS FOUND");
@@ -58,7 +59,8 @@ public class TopicExtractionMethods {
      * @param liga         language identification model
      */
     public static void getTopicsForOneDialog(DBStorage dbStorage, TEDialog dialog, int dateFrom, int dateTo,
-                                             int docThreshold, boolean msgMerging, LIGA liga) {
+                                             int docThreshold, boolean msgMerging, LIGA liga,
+                                             Map<String, Set<String>> stopwords) {
         List<TEMessage> msgs;
         // if dates valid - get only messages between these dates, otherwise - get all messages
         if (datesCheck(dateFrom, dateTo)) {
@@ -74,7 +76,7 @@ public class TopicExtractionMethods {
 
             getMessageLanguages(msgs, liga);
 
-            removeStopWords(msgs);
+            removeStopWords(msgs, stopwords);
 
             Map<String, String> uniqueWords = getUniqueWords(msgs);
             uniqueWords = GRAS.doStemming(uniqueWords, 5, 4, 0.8);
@@ -174,15 +176,15 @@ public class TopicExtractionMethods {
      *
      * @param msgs     messages
      */
-    private static void removeStopWords(List<TEMessage> msgs) {
-
-        // TODO
-
+    private static void removeStopWords(List<TEMessage> msgs, Map<String, Set<String>> stopwords) {
         for (TEMessage msg : msgs) {
-            Set<String> stopWords = loadStopWords(msg.getBestLang());
+            String lang = msg.getBestLang();
+            // load stopwords for "lang" if only they're not loaded before
+            if (!stopwords.containsKey(lang))
+                stopwords.put(lang, loadStopWords(lang));
             List<String> tokens = msg.getTokens();
             for (int j = 0; j < tokens.size(); j++) {
-                if (stopWords.contains(tokens.get(j))) {
+                if (stopwords.get(lang).contains(tokens.get(j))) {
                     msg.getTokens().remove(j);
                     j--;
                 }

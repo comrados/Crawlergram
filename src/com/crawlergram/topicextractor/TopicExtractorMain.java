@@ -13,6 +13,9 @@ import com.crawlergram.topicextractor.extractormethods.TopicExtractionMethods;
 import com.crawlergram.topicextractor.liga.LIGA;
 
 import java.io.File;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 public class TopicExtractorMain {
 
@@ -24,13 +27,17 @@ public class TopicExtractorMain {
 
         // language identification model (loaded only once)
         String ligaModel = "res" + File.separator + "liga" + File.separator + "model_n3.liga";
-        LIGA liga = new LIGA().setLogLIGA(false).setMaxSearchDepth(5000).setThreshold(0.0125).setN(3).loadModel(ligaModel);
+        LIGA liga = new LIGA().setLogLIGA(true).setMaxSearchDepth(5000).setThreshold(1.0).setN(3).loadModel(ligaModel);
+
+        // map for stopwords to prevent multiple file readings
+        Map<String, Set<String>> stopwords = new TreeMap<>();
 
         // do topic extraction
-        TopicExtractionMethods.getTopicsForAllDialogs(dbStorage, 0, 0, 200, false, liga);
+        TopicExtractionMethods.getTopicsForAllDialogs(dbStorage, 0, 0, 200, false, liga, stopwords);
 
-        // drops model to save memory
+        // drop model and stopwords to save memory
         liga.dropModel();
+        stopwords.clear();
 
         //TODO read from DB, calculate time intervals, create docs, perform topic extraction
 

@@ -14,7 +14,7 @@ Java crawler for Telegram based on [TelegramApi](https://github.com/rubenlagus/T
 
 5. [Jackson JSON 2+](https://github.com/FasterXML/jackson) library.
 
-The JARs can be found in /lib.
+JARs can be found in /lib.
 
 ## Acknowledgments
 
