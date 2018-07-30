@@ -119,6 +119,7 @@ does
 doesn't
 doing
 don't
+dont
 done
 down
 downwards
@@ -214,6 +215,7 @@ i
 i'd
 i'll
 i'm
+im
 i've
 ie
 if

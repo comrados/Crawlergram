@@ -27,7 +27,7 @@ public class TopicExtractorMain {
 
         // language identification model (loaded only once)
         String ligaModel = "res" + File.separator + "liga" + File.separator + "model_n3.liga";
-        LIGA liga = new LIGA().setLogLIGA(true).setMaxSearchDepth(5000).setThreshold(1.0).setN(3).loadModel(ligaModel);
+        LIGA liga = new LIGA().setLogLIGA(true).setMaxSearchDepth(5000).setThreshold(0.5).setN(3).loadModel(ligaModel);
 
         // map for stopwords to prevent multiple file readings
         Map<String, Set<String>> stopwords = new TreeMap<>();

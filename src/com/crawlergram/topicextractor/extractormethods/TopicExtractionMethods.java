@@ -76,7 +76,10 @@ public class TopicExtractionMethods {
 
             getMessageLanguages(msgs, liga);
 
-            removeStopWords(msgs, stopwords);
+            String bestLang = getDialogsBestLang(msgs, 0.8);
+            getLangStats(msgs);
+
+            removeStopWords(msgs, stopwords, bestLang, 0.9);
 
             Map<String, String> uniqueWords = getUniqueWords(msgs);
             uniqueWords = GRAS.doStemming(uniqueWords, 5, 4, 0.8);
@@ -172,22 +175,39 @@ public class TopicExtractionMethods {
     }
 
     /**
-     * removes stopwords from token compounds
+     * Removes stopwords from token compounds. If chat has a dominating language - additional chack
      *
-     * @param msgs     messages
+     * @param msgs messages
+     * @param stopwords stopwords
+     * @param bestLang best language of dialog
      */
-    private static void removeStopWords(List<TEMessage> msgs, Map<String, Set<String>> stopwords) {
+    private static void removeStopWords(List<TEMessage> msgs, Map<String, Set<String>> stopwords,
+                                        String bestLang, double langsRatio) {
+        // loads best lang
+        if (!bestLang.equals("UNKNOWN") && !stopwords.containsKey(bestLang))
+            stopwords.put(bestLang, loadStopWords(bestLang));
+        // checks msgs
         for (TEMessage msg : msgs) {
             String lang = msg.getBestLang();
             // load stopwords for "lang" if only they're not loaded before
             if (!stopwords.containsKey(lang))
-                stopwords.put(lang, loadStopWords(lang));
+                stopwords.put(lang, loadStopWords(lang));            
             List<String> tokens = msg.getTokens();
-            for (int j = 0; j < tokens.size(); j++) {
-                if (stopwords.get(lang).contains(tokens.get(j))) {
+            boolean flag = false;
+            for (int j = 0; j < tokens.size(); j++) {                
+                if (stopwords.get(lang).contains(tokens.get(j)))
+                    flag = true;
+                // additionally check if LI doubts (if lang != bestLang and PbestLang/Plang > langsRatio)
+                if (msg.getLangs().containsKey(bestLang))
+                    if (!lang.equals(bestLang) && (msg.getLangs().get(lang)/msg.getLangs().get(bestLang) > langsRatio)
+                            && stopwords.get(bestLang).contains(tokens.get(j)))
+                        flag = true;
+                if (flag){
                     msg.getTokens().remove(j);
                     j--;
-                }
+                    flag = false;
+                }                                
+                    
             }
         }
     }
@@ -206,6 +226,36 @@ public class TopicExtractionMethods {
             System.out.println("Can't read stopwords for " + language.toUpperCase() + " language");
         }
         return stopWords;
+    }
+
+    /**
+     * Returns the language if it's the best language in the most of the cases
+     *
+     * @param msgs messages
+     * @param threshhold min threshold of popularity
+     */
+    private static String getDialogsBestLang(List<TEMessage> msgs, double threshhold){
+        Integer totalCount = 0;
+        Integer bestCount = -1;
+        String bestLang = "UNKNOWN";
+        Map<String, Integer> langsCounts = new HashMap<>();
+        for (TEMessage msg: msgs){
+            String bestlang = msg.getBestLang();
+            if (!langsCounts.containsKey(bestlang)) langsCounts.put(bestlang, 0);
+            langsCounts.put(bestlang, langsCounts.get(bestlang) + 1);
+        }
+        for (Map.Entry<String, Integer> count : langsCounts.entrySet()){
+            if (count.getValue() > bestCount) {
+                bestCount = count.getValue();
+                bestLang = count.getKey();
+            }
+            totalCount += count.getValue();
+        }
+        if ((totalCount > 0) && ((bestCount / totalCount) >= threshhold)){
+            return bestLang;
+        } else {
+            return "UNKNOWN";
+        }
     }
 
 
@@ -268,5 +318,30 @@ public class TopicExtractionMethods {
         System.out.println("----------------------------------------------------------");
     }
 
+    private static void getLangStats(List<TEMessage> msgs){
+        Map<String, Integer> langsTotal = new HashMap<>();
+        Map<String, Integer> langsPop = new HashMap<>();
+        for (TEMessage msg: msgs){
+            Set<String> langs = msg.getLangs().keySet();
+            for (String lang: langs){
+                if (!langsTotal.containsKey(lang)) langsTotal.put(lang, 0);
+                langsTotal.put(lang, langsTotal.get(lang) + 1);
+            }
+            String bestlang = msg.getBestLang();
+            if (!langsPop.containsKey(bestlang)) langsPop.put(bestlang, 0);
+            langsPop.put(bestlang, langsPop.get(bestlang) + 1);
+        }
+        System.out.println("");
+        System.out.println("Best languages: ");
+        for (Map.Entry<String, Integer> entry: langsPop.entrySet()){
+            System.out.println(entry.getKey() + " " + entry.getValue());
+        }
+        System.out.println("");
+        System.out.println("All recognized languages: ");
+        for (Map.Entry<String, Integer> entry: langsTotal.entrySet()){
+            System.out.println(entry.getKey() + " " + entry.getValue());
+        }
+        System.out.println("");
+    }
 
 }
